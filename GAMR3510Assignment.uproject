@@ -1,0 +1,22 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "{9C072F89-48BF-6728-D30F-1280E9103404}",
+	"Category": "",
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "GAMR3510Assignment",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "ModelingToolsEditorMode",
+			"Enabled": true,
+			"TargetAllowList": [
+				"Editor"
+			]
+		}
+	]
+}
