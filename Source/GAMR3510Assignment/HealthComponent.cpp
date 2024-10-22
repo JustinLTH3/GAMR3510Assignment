@@ -19,20 +19,22 @@ float UHealthComponent::GetHealth() const
 	return health;
 }
 
-// Called when the game starts
+void UHealthComponent::TakeDamage(const float Damage)
+{
+	health -= Damage;
+	if (health <= 0) DieDelegate.Broadcast();
+}
+
 void UHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// ...
+	health = MaxHealth;
 }
 
 // Called every frame
 void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
 }
 
 void UHealthComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const

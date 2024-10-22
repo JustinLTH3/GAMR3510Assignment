@@ -6,6 +6,13 @@
 #include "GameFramework/Character.h"
 #include "MyCharater.generated.h"
 
+class UHealthComponent;
+class USpringArmComponent;
+class UWeaponComponent;
+class UInputAction;
+class UInputMappingContext;
+class UCameraComponent;
+
 UCLASS()
 class GAMR3510ASSIGNMENT_API AMyCharater : public ACharacter
 {
@@ -18,15 +25,45 @@ public:
 	float GetHealth() const;
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	UPROPERTY(VisibleAnywhere)
-	class UHealthComponent* HealthComp;
+	UPROPERTY(EditDefaultsOnly)
+	UHealthComponent* HealthComp;
+	UPROPERTY(EditDefaultsOnly)
+	USpringArmComponent* SpringArm;
+	UPROPERTY(EditDefaultsOnly)
+	UCameraComponent* CameraComp;
+
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	UInputMappingContext* DefaultMappingContext;
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	UInputAction* IA_Move;
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	UInputAction* IA_Fire;
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	UInputAction* IA_Look;
+
+	UPROPERTY(EditDefaultsOnly, Category="Weapon")
+	UWeaponComponent* WeaponComponent;
 
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+	virtual void PossessedBy(AController* NewController) override;
+	virtual void UnPossessed() override;
+
+	UFUNCTION()
+	void Move(const struct FInputActionValue& Value);
+	UFUNCTION()
+	void Look(const FInputActionValue& Value);
+
+	UFUNCTION()
+	void OnDie();
+
+	UFUNCTION()
+	void Fire();
+	UFUNCTION(Server, Unreliable)
+	void ServerFireRPC(bool bIsSuccessful, const FHitResult& HitResult);
 };

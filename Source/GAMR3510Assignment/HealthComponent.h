@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "HealthComponent.generated.h"
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FHealthComponentDelegate);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class GAMR3510ASSIGNMENT_API UHealthComponent : public UActorComponent
@@ -16,12 +17,18 @@ public:
 	UHealthComponent();
 	UFUNCTION()
 	float GetHealth() const;
+	UFUNCTION()
+	void TakeDamage(float Damage);
+	UPROPERTY() //Broadcast when the owner of the component die.
+	FHealthComponentDelegate DieDelegate;
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	UPROPERTY(Replicated)
-	float health;
+	float health = 100;
+	UPROPERTY(EditDefaultsOnly)
+	float MaxHealth = 100;
 
 public:
 	// Called every frame
