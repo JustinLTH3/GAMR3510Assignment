@@ -18,19 +18,19 @@ UHealthComponent::UHealthComponent()
 
 float UHealthComponent::GetHealth() const
 {
-	return health;
+	return Health;
 }
 
 void UHealthComponent::TakeDamage(const float Damage)
 {
-	health -= Damage;
-	if (health <= 0) DieDelegate.Broadcast();
+	Health -= Damage;
+	if (Health <= 0) DieDelegate.Broadcast();
 }
 
 void UHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	health = MaxHealth;
+	Health = MaxHealth;
 	OnRep_Health();
 }
 
@@ -43,7 +43,7 @@ void UHealthComponent::OnRep_Health()
 		const auto Controller = Cast<APlayerController>(Character->GetController());
 		if (!Controller) return;
 		if (!Controller->GetHUD()) return;
-		Cast<AGameHUD>(Controller->GetHUD())->HealthBar->UpdateHealth(health, MaxHealth);
+		Cast<AGameHUD>(Controller->GetHUD())->HealthBar->UpdateHealth(Health, MaxHealth);
 	}
 }
 
@@ -56,5 +56,5 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 void UHealthComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(UHealthComponent, health);
+	DOREPLIFETIME(UHealthComponent, Health);
 }

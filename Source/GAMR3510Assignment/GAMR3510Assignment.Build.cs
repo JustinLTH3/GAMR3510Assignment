@@ -9,7 +9,7 @@ public class GAMR3510Assignment : ModuleRules
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
 		PublicDependencyModuleNames.AddRange(new string[]
-			{ "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput" });
+			{ "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "UMG" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });
 

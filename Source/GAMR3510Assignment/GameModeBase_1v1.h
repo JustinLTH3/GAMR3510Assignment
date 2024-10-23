@@ -18,6 +18,5 @@ public:
 	AGameModeBase_1v1();
 
 protected:
-	virtual void BeginPlay();
-	
+	virtual void BeginPlay() override;
 };

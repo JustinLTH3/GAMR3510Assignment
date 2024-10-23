@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "MyCharater.generated.h"
+#include "MyCharacter.generated.h"
 
 class UHealthComponent;
 class USpringArmComponent;
@@ -14,13 +14,13 @@ class UInputMappingContext;
 class UCameraComponent;
 
 UCLASS()
-class GAMR3510ASSIGNMENT_API AMyCharater : public ACharacter
+class GAMR3510ASSIGNMENT_API AMyCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
-	AMyCharater();
+	AMyCharacter();
 	UFUNCTION()
 	float GetHealth() const;
 

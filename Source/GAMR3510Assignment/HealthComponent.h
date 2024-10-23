@@ -26,7 +26,7 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	UPROPERTY(ReplicatedUsing=OnRep_Health)
-	float health = 100;
+	float Health = 100;
 	UPROPERTY(EditDefaultsOnly)
 	float MaxHealth = 100;
 UFUNCTION()

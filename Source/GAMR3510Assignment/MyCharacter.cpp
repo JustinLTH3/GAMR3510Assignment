@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "MyCharater.h"
+#include "MyCharacter.h"
 
 #include "HealthComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -12,7 +12,7 @@
 #include "GameFramework/SpringArmComponent.h"
 
 // Sets default values
-AMyCharater::AMyCharater()
+AMyCharacter::AMyCharacter()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -35,15 +35,15 @@ AMyCharater::AMyCharater()
 	bUseControllerRotationRoll = false;
 }
 
-float AMyCharater::GetHealth() const
+float AMyCharacter::GetHealth() const
 {
 	return HealthComp->GetHealth();
 }
 
-void AMyCharater::BeginPlay()
+void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	HealthComp->DieDelegate.AddDynamic(this, &AMyCharater::OnDie);
+	HealthComp->DieDelegate.AddDynamic(this, &AMyCharacter::OnDie);
 	const APlayerController* PlayerController = Cast<APlayerController>(Controller);
 	if (!PlayerController) return;
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
@@ -52,12 +52,12 @@ void AMyCharater::BeginPlay()
 	}
 }
 
-void AMyCharater::Tick(float DeltaTime)
+void AMyCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
 
-float AMyCharater::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
+float AMyCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
 {
 	float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	HealthComp->TakeDamage(ActualDamage);
@@ -65,26 +65,26 @@ float AMyCharater::TakeDamage(float DamageAmount, struct FDamageEvent const& Dam
 }
 
 // Called to bind functionality to input
-void AMyCharater::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
-		EnhancedInputComponent->BindAction(IA_Move, ETriggerEvent::Triggered, this, &AMyCharater::Move);
-		EnhancedInputComponent->BindAction(IA_Fire, ETriggerEvent::Triggered, this, &AMyCharater::Fire);
-		EnhancedInputComponent->BindAction(IA_Look, ETriggerEvent::Triggered, this, &AMyCharater::Look);
-		EnhancedInputComponent->BindAction(IA_Jump, ETriggerEvent::Started, this, &AMyCharater::Jump);
+		EnhancedInputComponent->BindAction(IA_Move, ETriggerEvent::Triggered, this, &AMyCharacter::Move);
+		EnhancedInputComponent->BindAction(IA_Fire, ETriggerEvent::Triggered, this, &AMyCharacter::Fire);
+		EnhancedInputComponent->BindAction(IA_Look, ETriggerEvent::Triggered, this, &AMyCharacter::Look);
+		EnhancedInputComponent->BindAction(IA_Jump, ETriggerEvent::Started, this, &AMyCharacter::Jump);
 	}
 }
 
-void AMyCharater::Move(const struct FInputActionValue& Value)
+void AMyCharacter::Move(const struct FInputActionValue& Value)
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();
 	AddMovementInput(GetActorForwardVector(), MovementVector.Y);
 	AddMovementInput(GetActorRightVector(), MovementVector.X);
 }
 
-void AMyCharater::Fire()
+void AMyCharacter::Fire()
 {
 	if (WeaponComponent->GetCanFire())
 	{
@@ -97,12 +97,12 @@ void AMyCharater::Fire()
 	}
 }
 
-void AMyCharater::ServerFireRPC_Implementation(bool bIsSuccessful, const FHitResult& HitResult)
+void AMyCharacter::ServerFireRPC_Implementation(bool bIsSuccessful, const FHitResult& HitResult)
 {
 	if (WeaponComponent) WeaponComponent->Shoot(bIsSuccessful, HitResult);
 }
 
-void AMyCharater::Look(const FInputActionValue& Value)
+void AMyCharacter::Look(const FInputActionValue& Value)
 {
 	const FVector2D Input = Value.Get<FVector2D>();
 
@@ -110,7 +110,7 @@ void AMyCharater::Look(const FInputActionValue& Value)
 	AddControllerPitchInput(-Input.Y);
 }
 
-void AMyCharater::PossessedBy(AController* NewController)
+void AMyCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 	UE_LOG(LogTemp, Warning, TEXT("AMyCharater::PossessedBy"));
@@ -122,7 +122,7 @@ void AMyCharater::PossessedBy(AController* NewController)
 	}
 }
 
-void AMyCharater::UnPossessed()
+void AMyCharacter::UnPossessed()
 {
 	const APlayerController* PlayerController = Cast<APlayerController>(Controller);
 	if (!PlayerController) return;
@@ -134,7 +134,7 @@ void AMyCharater::UnPossessed()
 	Super::UnPossessed();
 }
 
-void AMyCharater::OnDie()
+void AMyCharacter::OnDie()
 {
 	UE_LOG(LogTemp, Warning, TEXT("%s Die"), *GetName())
 }
