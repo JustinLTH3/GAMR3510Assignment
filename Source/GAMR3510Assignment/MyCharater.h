@@ -41,6 +41,8 @@ protected:
 	UInputAction* IA_Fire;
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	UInputAction* IA_Look;
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	UInputAction* IA_Jump;
 
 	UPROPERTY(EditDefaultsOnly, Category="Weapon")
 	UWeaponComponent* WeaponComponent;

@@ -2,6 +2,9 @@
 
 #include "HealthComponent.h"
 
+#include "GameHUD.h"
+#include "HealthBarWidget.h"
+#include "GameFramework/Character.h"
 #include "Net/UnrealNetwork.h"
 
 // Sets default values for this component's properties
@@ -10,8 +13,7 @@ UHealthComponent::UHealthComponent()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
+	SetIsReplicatedByDefault(true);
 }
 
 float UHealthComponent::GetHealth() const
@@ -29,6 +31,20 @@ void UHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	health = MaxHealth;
+	OnRep_Health();
+}
+
+void UHealthComponent::OnRep_Health()
+{
+	UE_LOG(LogTemp, Display, TEXT("Health Component On Replication"));
+	if (ACharacter* Character = Cast<ACharacter>(GetOwner()))
+	{
+		if (!Character->GetController()) return;
+		const auto Controller = Cast<APlayerController>(Character->GetController());
+		if (!Controller) return;
+		if (!Controller->GetHUD()) return;
+		Cast<AGameHUD>(Controller->GetHUD())->HealthBar->UpdateHealth(health, MaxHealth);
+	}
 }
 
 // Called every frame

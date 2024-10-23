@@ -73,6 +73,7 @@ void AMyCharater::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		EnhancedInputComponent->BindAction(IA_Move, ETriggerEvent::Triggered, this, &AMyCharater::Move);
 		EnhancedInputComponent->BindAction(IA_Fire, ETriggerEvent::Triggered, this, &AMyCharater::Fire);
 		EnhancedInputComponent->BindAction(IA_Look, ETriggerEvent::Triggered, this, &AMyCharater::Look);
+		EnhancedInputComponent->BindAction(IA_Jump, ETriggerEvent::Started, this, &AMyCharater::Jump);
 	}
 }
 

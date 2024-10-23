@@ -25,11 +25,12 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-	UPROPERTY(Replicated)
+	UPROPERTY(ReplicatedUsing=OnRep_Health)
 	float health = 100;
 	UPROPERTY(EditDefaultsOnly)
 	float MaxHealth = 100;
-
+UFUNCTION()
+	void OnRep_Health();
 public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
