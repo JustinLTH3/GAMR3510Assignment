@@ -28,4 +28,7 @@ public:
 	UFUNCTION() //need it to bind functions
 	void QuitGame();
 
+	UFUNCTION()
+	void StartGame();
+
 };
