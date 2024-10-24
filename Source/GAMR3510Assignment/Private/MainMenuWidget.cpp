@@ -28,6 +28,7 @@ void UMainMenuWidget::StartGame()
 void UMainMenuWidget::SettingsMenu()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Settings"))
-	this->SetVisibility(ESlateVisibility::Collapsed);
+	this->SetVisibility(ESlateVisibility::Collapsed); //this (refers to itself which is the widget)
+													  //set visibility to be hidden and not take space in the scene
 }
 
