@@ -25,4 +25,5 @@ public:
 
     // Function to update both the progress bar and text
     void UpdateHealth(float CurrentHealth, float MaxHealth);
+    
 };
