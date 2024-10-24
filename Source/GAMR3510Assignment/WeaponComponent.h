@@ -44,7 +44,7 @@ public:
 	UFUNCTION()
 	void ReloadWeapon();
 	UFUNCTION()
-	void Shoot(bool bIsSuccessful, const FHitResult& HitResult);
+	void Shoot();
 
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 

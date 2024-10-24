@@ -23,6 +23,8 @@ public:
 	AMyCharacter();
 	UFUNCTION()
 	float GetHealth() const;
+	UFUNCTION()
+	UCameraComponent* GetCameraComponent() const;
 
 protected:
 	virtual void BeginPlay() override;
@@ -67,5 +69,5 @@ public:
 	UFUNCTION()
 	void Fire();
 	UFUNCTION(Server, Unreliable)
-	void ServerFireRPC(bool bIsSuccessful, const FHitResult& HitResult);
+	void ServerFireRPC();
 };

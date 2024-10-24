@@ -40,6 +40,11 @@ float AMyCharacter::GetHealth() const
 	return HealthComp->GetHealth();
 }
 
+UCameraComponent* AMyCharacter::GetCameraComponent() const
+{
+	return CameraComp;
+}
+
 void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -93,13 +98,13 @@ void AMyCharacter::Fire()
 
 		const FVector2D MidPoint = GEngine->GameViewport->Viewport->GetSizeXY() / 2;
 		bHitSuccessful = Cast<APlayerController>(GetController())->GetHitResultAtScreenPosition(MidPoint, ECollisionChannel::ECC_Pawn, true, Hit);
-		ServerFireRPC(bHitSuccessful, Hit);
+		ServerFireRPC();
 	}
 }
 
-void AMyCharacter::ServerFireRPC_Implementation(bool bIsSuccessful, const FHitResult& HitResult)
+void AMyCharacter::ServerFireRPC_Implementation()
 {
-	if (WeaponComponent) WeaponComponent->Shoot(bIsSuccessful, HitResult);
+	if (WeaponComponent) WeaponComponent->Shoot();
 }
 
 void AMyCharacter::Look(const FInputActionValue& Value)

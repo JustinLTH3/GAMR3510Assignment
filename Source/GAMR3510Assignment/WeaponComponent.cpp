@@ -3,6 +3,8 @@
 #include "WeaponComponent.h"
 
 #include "HealthComponent.h"
+#include "MyCharacter.h"
+#include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
@@ -15,7 +17,7 @@ UWeaponComponent::UWeaponComponent()
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 }
 
-void UWeaponComponent::Shoot(const bool bIsSuccessful, const FHitResult& HitResult)
+void UWeaponComponent::Shoot()
 {
 	if (!bCanFire) return;
 	if (bIsReloading) return;
@@ -28,10 +30,13 @@ void UWeaponComponent::Shoot(const bool bIsSuccessful, const FHitResult& HitResu
 	BulletCount--;
 	GetWorld()->GetTimerManager().SetTimer(FireRateTimerHandle, [this]() { bCanFire = true; }, FireRate, false);
 	UE_LOG(LogTemp, Warning, TEXT("%s Shoot"), *GetOwner()->GetName())
+	FHitResult Hit;
+	UCameraComponent* Cam = Cast<AMyCharacter>(GetOwner())->GetCameraComponent();
+	GetWorld()->LineTraceSingleByChannel(Hit, Cam->GetComponentLocation(), Cam->GetForwardVector() * 1000 + Cam->GetComponentLocation(), ECC_Pawn);
 
-	if (!bIsSuccessful) return;
+	if (!Hit.GetActor()) return;
 
-	AActor* HitActor = HitResult.GetActor();
+	AActor* HitActor = Hit.GetActor();
 	const auto HealthComp = HitActor->GetComponentByClass<UHealthComponent>();
 	UE_LOG(LogTemp, Display, TEXT("Hit Actor: %s"), *HitActor->GetName());
 	if (!HealthComp) return;
