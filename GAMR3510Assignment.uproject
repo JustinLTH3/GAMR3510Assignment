@@ -1,13 +1,16 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "5.3",
+	"EngineAssociation": "{051EB8C2-4C8E-E926-89D3-DFA4ECB792D9}",
 	"Category": "",
 	"Description": "",
 	"Modules": [
 		{
 			"Name": "GAMR3510Assignment",
 			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"UMG"
+			]
 		}
 	],
 	"Plugins": [
