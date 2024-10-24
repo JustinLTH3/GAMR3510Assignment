@@ -17,7 +17,8 @@ class GAMR3510ASSIGNMENT_API UMainMenuWidget : public UUserWidget
 public:
 	virtual void NativeConstruct()override;
 
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget)) //basically if the name of the variable here is the 
+													   //same as the one in BP then you can acces the BP one
 	class UButton* Multiplayer;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
@@ -25,10 +26,14 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UButton* QuitButton;
+
 	UFUNCTION() //need it to bind functions
 	void QuitGame();
 
 	UFUNCTION()
 	void StartGame();
+
+	UFUNCTION()
+	void SettingsMenu();
 
 };

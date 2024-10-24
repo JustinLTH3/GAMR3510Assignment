@@ -8,6 +8,7 @@ void UMainMenuWidget::NativeConstruct()
 {
 	Multiplayer->OnClicked.AddDynamic(this, &UMainMenuWidget::StartGame);
 	QuitButton->OnClicked.AddDynamic(this, &UMainMenuWidget::QuitGame); //binding quit game function to button
+	Settings->OnClicked.AddDynamic(this, &UMainMenuWidget::SettingsMenu);
 	
 }
 
@@ -22,5 +23,11 @@ void UMainMenuWidget::StartGame()
 	
 	FName LevelName = "UI_Testing";  // The name of the level you want to load
 	UGameplayStatics::OpenLevel(this, LevelName);
+}
+
+void UMainMenuWidget::SettingsMenu()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Settings"))
+	this->SetVisibility(ESlateVisibility::Collapsed);
 }
 
