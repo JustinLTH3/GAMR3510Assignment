@@ -17,9 +17,12 @@ class GAMR3510ASSIGNMENT_API USettingsMenu : public UUserWidget
 public:
 	virtual void NativeConstruct()override;
 
-	/*UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	class UButton* BackButton;*/
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UButton* BackButton;
 
 	UFUNCTION()
-	void OpenSettings();
+	void HideMenu();
+
+	UFUNCTION()
+	void ShowMenu();
 };

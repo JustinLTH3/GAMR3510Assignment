@@ -8,7 +8,7 @@ void UMainMenuWidget::NativeConstruct()
 {
 	Multiplayer->OnClicked.AddDynamic(this, &UMainMenuWidget::StartGame);
 	QuitButton->OnClicked.AddDynamic(this, &UMainMenuWidget::QuitGame); //binding quit game function to button
-	Settings->OnClicked.AddDynamic(this, &UMainMenuWidget::SettingsMenu);
+	Settings->OnClicked.AddDynamic(this, &UMainMenuWidget::HideMenu);
 	
 }
 
@@ -25,10 +25,17 @@ void UMainMenuWidget::StartGame()
 	UGameplayStatics::OpenLevel(this, LevelName);
 }
 
-void UMainMenuWidget::SettingsMenu()
+void UMainMenuWidget::HideMenu()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Settings"))
 	this->SetVisibility(ESlateVisibility::Collapsed); //this (refers to itself which is the widget)
 													  //set visibility to be hidden and not take space in the scene
 }
+
+void UMainMenuWidget::ShowMenu()
+{
+	this->SetVisibility(ESlateVisibility::Visible); //this (refers to itself which is the widget)
+	//set visibility to be visible 
+}
+
+
 
