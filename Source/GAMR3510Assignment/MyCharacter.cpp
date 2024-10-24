@@ -79,6 +79,7 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		EnhancedInputComponent->BindAction(IA_Fire, ETriggerEvent::Triggered, this, &AMyCharacter::Fire);
 		EnhancedInputComponent->BindAction(IA_Look, ETriggerEvent::Triggered, this, &AMyCharacter::Look);
 		EnhancedInputComponent->BindAction(IA_Jump, ETriggerEvent::Started, this, &AMyCharacter::Jump);
+		EnhancedInputComponent->BindAction(IA_Reload, ETriggerEvent::Started, this, &AMyCharacter::ServerReloadRPC);
 	}
 }
 
@@ -100,6 +101,11 @@ void AMyCharacter::Fire()
 		bHitSuccessful = Cast<APlayerController>(GetController())->GetHitResultAtScreenPosition(MidPoint, ECollisionChannel::ECC_Pawn, true, Hit);
 		ServerFireRPC();
 	}
+}
+
+void AMyCharacter::ServerReloadRPC_Implementation()
+{
+	if (WeaponComponent) WeaponComponent->ReloadWeapon();
 }
 
 void AMyCharacter::ServerFireRPC_Implementation()

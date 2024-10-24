@@ -6,6 +6,7 @@
 #include "GameFramework/HUD.h"
 #include "GameHUD.generated.h"
 
+class UBulletCountWidget;
 class UHealthBarWidget;
 /**
  * 
@@ -22,4 +23,8 @@ public:
 	virtual void BeginPlay() override;
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UHealthBarWidget> HealthBarClass;
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UBulletCountWidget> BulletCountClass;
+	UPROPERTY(BlueprintReadWrite)
+	UBulletCountWidget* BulletCountWidget;
 };

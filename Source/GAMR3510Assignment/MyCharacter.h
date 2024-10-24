@@ -45,6 +45,8 @@ protected:
 	UInputAction* IA_Look;
 	UPROPERTY(EditDefaultsOnly, Category="Input")
 	UInputAction* IA_Jump;
+	UPROPERTY(EditDefaultsOnly, Category="Input")
+	UInputAction* IA_Reload;
 
 	UPROPERTY(EditDefaultsOnly, Category="Weapon")
 	UWeaponComponent* WeaponComponent;
@@ -70,4 +72,6 @@ public:
 	void Fire();
 	UFUNCTION(Server, Unreliable)
 	void ServerFireRPC();
+	UFUNCTION(Server, Reliable)
+	void ServerReloadRPC();
 };

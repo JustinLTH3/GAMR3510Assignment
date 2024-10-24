@@ -37,9 +37,10 @@ protected:
 	bool bIsReloading = false;
 	UPROPERTY()
 	FTimerHandle ReloadTimerHandle;
-	UPROPERTY(Replicated)
+	UPROPERTY(ReplicatedUsing=OnRep_BulletCount)
 	int BulletCount;
-
+UFUNCTION()
+	void OnRep_BulletCount();
 public:
 	UFUNCTION()
 	void ReloadWeapon();

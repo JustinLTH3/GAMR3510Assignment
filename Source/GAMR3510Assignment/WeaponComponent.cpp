@@ -2,6 +2,8 @@
 
 #include "WeaponComponent.h"
 
+#include "BulletCountWidget.h"
+#include "GameHUD.h"
 #include "HealthComponent.h"
 #include "MyCharacter.h"
 #include "Camera/CameraComponent.h"
@@ -52,6 +54,31 @@ void UWeaponComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	BulletCount = MagSize;
+	if (ACharacter* Character = Cast<ACharacter>(GetOwner()))
+	{
+		if (!Character->GetController()) return;
+		const auto Controller = Cast<APlayerController>(Character->GetController());
+		if (!Controller) return;
+		if (!Controller->GetHUD()) return;
+		const auto HUD = Cast<AGameHUD>(Controller->GetHUD());
+		if (!HUD->BulletCountWidget) return;
+		HUD->BulletCountWidget->Update(BulletCount);
+		HUD->BulletCountWidget->SetMaxBulletCount(MagSize);
+	}
+}
+
+void UWeaponComponent::OnRep_BulletCount()
+{
+	if (ACharacter* Character = Cast<ACharacter>(GetOwner()))
+	{
+		if (!Character->GetController()) return;
+		const auto Controller = Cast<APlayerController>(Character->GetController());
+		if (!Controller) return;
+		if (!Controller->GetHUD()) return;
+		const auto HUD = Cast<AGameHUD>(Controller->GetHUD());
+		if (!HUD->BulletCountWidget) return;
+		HUD->BulletCountWidget->Update(BulletCount);
+	}
 }
 
 void UWeaponComponent::ReloadWeapon()
