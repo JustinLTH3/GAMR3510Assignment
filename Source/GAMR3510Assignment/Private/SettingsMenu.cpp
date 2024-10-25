@@ -2,18 +2,20 @@
 
 
 #include "SettingsMenu.h"
+#include "MainMenuWidget.h"
 #include "Components/Button.h"
 
 void USettingsMenu::NativeConstruct()
 {
 	HideMenu(); //menu is hidden immedietly
 	BackButton->OnClicked.AddDynamic(this, &USettingsMenu::HideMenu);
-	
+
 }
 
 void USettingsMenu::HideMenu()
 {
 	this->SetVisibility(ESlateVisibility::Collapsed);
+	
 }
 
 void USettingsMenu::ShowMenu()

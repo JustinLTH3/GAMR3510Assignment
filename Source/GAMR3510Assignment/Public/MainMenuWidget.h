@@ -26,6 +26,10 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UButton* QuitButton;
+	UPROPERTY()
+	class USettingsMenu* SettingsMenu;
+	UPROPERTY(EditDefaultsOnly) //make it appear in editor
+	TSubclassOf<USettingsMenu> SettingsMenuClass;
 
 	UFUNCTION() //need it to bind functions
 	void QuitGame();
