@@ -11,7 +11,7 @@ void UMainMenuWidget::NativeConstruct()
 	Multiplayer->OnClicked.AddDynamic(this, &UMainMenuWidget::StartGame);
 	QuitButton->OnClicked.AddDynamic(this, &UMainMenuWidget::QuitGame); //binding quit game function to button
 	Settings->OnClicked.AddDynamic(this, &UMainMenuWidget::OpenSettingsMenu);
-	SettingsMenu = CreateWidget<USettingsMenu>(GetOwningPlayer(), SettingsMenuClass);//name of the variable, creating a widget of class USettingsMenu, with player controller, and is the same as the bp settings menu
+	SettingsMenu = CreateWidget<USettingsMenu>(GetOwningPlayer(), SettingsMenuClass);//name of the variable, creating a widget of class USettingsMenu, with player controller,given the appearance and values from the bp
 	SettingsMenu->AddToViewport();
 	SettingsMenu->BackButton->OnClicked.AddDynamic(this, &UMainMenuWidget::ShowMenu);
 }
