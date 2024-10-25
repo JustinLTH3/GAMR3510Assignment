@@ -3,12 +3,13 @@
 #include "Kismet/GameplayStatics.h" //needed for level loading function
 #include "MainMenuWidget.h"
 #include "Components/Button.h"
+#include "SettingsMenu.h"
 
 void UMainMenuWidget::NativeConstruct()
 {
 	Multiplayer->OnClicked.AddDynamic(this, &UMainMenuWidget::StartGame);
 	QuitButton->OnClicked.AddDynamic(this, &UMainMenuWidget::QuitGame); //binding quit game function to button
-	Settings->OnClicked.AddDynamic(this, &UMainMenuWidget::HideMenu);
+	Settings->OnClicked.AddDynamic(this, &UMainMenuWidget::OpenSettingsMenu);
 	
 }
 
@@ -35,6 +36,11 @@ void UMainMenuWidget::ShowMenu()
 {
 	this->SetVisibility(ESlateVisibility::Visible); //this (refers to itself which is the widget)
 	//set visibility to be visible 
+}
+
+void UMainMenuWidget::OpenSettingsMenu()
+{
+	HideMenu();
 }
 
 

@@ -39,4 +39,7 @@ public:
 	UFUNCTION()
 	void ShowMenu();
 
+	UFUNCTION()
+	void OpenSettingsMenu();
+
 };
