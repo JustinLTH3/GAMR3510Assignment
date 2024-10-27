@@ -30,6 +30,7 @@ void UWeaponComponent::Shoot()
 	}
 	bCanFire = false;
 	BulletCount--;
+	OnRep_BulletCount();
 	GetWorld()->GetTimerManager().SetTimer(FireRateTimerHandle, [this]() { bCanFire = true; }, FireRate, false);
 	UE_LOG(LogTemp, Warning, TEXT("%s Shoot"), *GetOwner()->GetName())
 	FHitResult Hit;
@@ -89,6 +90,7 @@ void UWeaponComponent::ReloadWeapon()
 	{
 		bIsReloading = false;
 		BulletCount = MagSize;
+		OnRep_BulletCount();
 	}, ReloadTime, false);
 }
 
