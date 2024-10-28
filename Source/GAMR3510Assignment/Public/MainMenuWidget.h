@@ -15,9 +15,10 @@ class GAMR3510ASSIGNMENT_API UMainMenuWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	virtual void NativeConstruct()override;
+	virtual void NativeConstruct()override; //constructs the user widget and used for applying values to variable and functions
 
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget)) //basically if the name of the variable here is the 
+													   //same as the one in BP then you can acces the BP one
 	class UButton* Multiplayer;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
@@ -25,7 +26,24 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UButton* QuitButton;
+	UPROPERTY()
+	class USettingsMenu* SettingsMenu;
+	UPROPERTY(EditDefaultsOnly) //make it appear in editor
+	TSubclassOf<USettingsMenu> SettingsMenuClass;
+
 	UFUNCTION() //need it to bind functions
 	void QuitGame();
+
+	UFUNCTION()
+	void StartGame();
+
+	UFUNCTION()
+	void HideMenu();
+
+	UFUNCTION()
+	void ShowMenu();
+
+	UFUNCTION()
+	void OpenSettingsMenu();
 
 };
