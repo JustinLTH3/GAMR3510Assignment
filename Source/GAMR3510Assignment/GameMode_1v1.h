@@ -3,19 +3,21 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameModeBase.h"
-#include "GameModeBase_1v1.generated.h"
+#include "GameFramework/GameMode.h"
+#include "GameMode_1v1.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class GAMR3510ASSIGNMENT_API AGameModeBase_1v1 : public AGameModeBase
+class GAMR3510ASSIGNMENT_API AGameMode_1v1 : public AGameMode
 {
 	GENERATED_BODY()
 
 public:
-	AGameModeBase_1v1();
+	AGameMode_1v1();
+
+	virtual bool ReadyToStartMatch_Implementation() override;
 
 protected:
 	virtual void BeginPlay() override;
