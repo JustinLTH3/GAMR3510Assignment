@@ -10,6 +10,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "UserSettings/EnhancedInputUserSettings.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -54,6 +55,7 @@ void AMyCharacter::BeginPlay()
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 	{
 		Subsystem->AddMappingContext(DefaultMappingContext, 0);
+		Subsystem->GetUserSettings()->RegisterInputMappingContext(DefaultMappingContext);
 	}
 }
 
@@ -130,6 +132,8 @@ void AMyCharacter::PossessedBy(AController* NewController)
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 	{
 		Subsystem->AddMappingContext(DefaultMappingContext, 0);
+		
+		Subsystem->GetUserSettings()->RegisterInputMappingContext(DefaultMappingContext);
 	}
 }
 
