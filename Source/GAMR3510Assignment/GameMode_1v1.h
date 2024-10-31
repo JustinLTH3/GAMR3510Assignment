@@ -6,6 +6,7 @@
 #include "GameFramework/GameMode.h"
 #include "GameMode_1v1.generated.h"
 
+
 /**
  * 
  */
@@ -18,7 +19,7 @@ public:
 	AGameMode_1v1();
 
 	virtual bool ReadyToStartMatch_Implementation() override;
-
+	virtual void ResetLevel() override;
 protected:
 	virtual void BeginPlay() override;
 };
