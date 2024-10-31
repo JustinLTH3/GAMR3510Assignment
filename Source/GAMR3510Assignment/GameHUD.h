@@ -27,4 +27,6 @@ public:
 	TSubclassOf<UBulletCountWidget> BulletCountClass;
 	UPROPERTY(BlueprintReadWrite)
 	UBulletCountWidget* BulletCountWidget;
+	UFUNCTION()
+	void Init(float Health, float MaxHealth, int BulletCount) const;
 };

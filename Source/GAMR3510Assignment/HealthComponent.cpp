@@ -23,8 +23,10 @@ float UHealthComponent::GetHealth() const
 
 void UHealthComponent::TakeDamage(const float Damage)
 {
+	if (Health <= 0) return;
 	Health -= Damage;
-	if (Health <= 0) DieDelegate.Broadcast();
+	OnRep_Health();
+	if (Health <= 0) DieDelegate.Broadcast(GetOwner());
 }
 
 void UHealthComponent::BeginPlay()
