@@ -16,6 +16,8 @@ public:
 	UWeaponComponent();
 	UFUNCTION()
 	bool GetCanFire();
+	UFUNCTION()
+	int GetBulletCount() const { return BulletCount; }
 
 protected:
 	virtual void BeginPlay() override;
@@ -39,8 +41,9 @@ protected:
 	FTimerHandle ReloadTimerHandle;
 	UPROPERTY(ReplicatedUsing=OnRep_BulletCount)
 	int BulletCount;
-UFUNCTION()
+	UFUNCTION()
 	void OnRep_BulletCount();
+
 public:
 	UFUNCTION()
 	void ReloadWeapon();

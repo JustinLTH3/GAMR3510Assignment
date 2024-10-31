@@ -19,3 +19,10 @@ void AGameHUD::BeginPlay()
 	BulletCountWidget = CreateWidget<UBulletCountWidget>(GetOwningPlayerController(), BulletCountClass);
 	BulletCountWidget->AddToViewport();
 }
+
+void AGameHUD::Init(const float Health, const float MaxHealth, const int BulletCount) const
+{
+	HealthBar->UpdateHealth(Health, MaxHealth);
+	BulletCountWidget->SetMaxBulletCount(BulletCount);
+	BulletCountWidget->Update(BulletCount);
+}

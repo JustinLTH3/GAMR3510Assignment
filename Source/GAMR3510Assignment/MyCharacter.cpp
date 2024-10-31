@@ -5,6 +5,7 @@
 #include "HealthComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "GameHUD.h"
 #include "InputMappingContext.h"
 #include "WeaponComponent.h"
 #include "Camera/CameraComponent.h"
@@ -126,30 +127,28 @@ void AMyCharacter::Look(const FInputActionValue& Value)
 void AMyCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
-	UE_LOG(LogTemp, Warning, TEXT("AMyCharater::PossessedBy"));
+	UE_LOG(LogTemp, Warning, TEXT("AMyCharacter::PossessedBy"));
+	OnPossessed(NewController);
+}
+
+void AMyCharacter::OnPossessed_Implementation(AController* NewController)
+{
 	const APlayerController* PlayerController = Cast<APlayerController>(NewController);
 	if (!PlayerController) return;
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 	{
 		Subsystem->AddMappingContext(DefaultMappingContext, 0);
-		
 		Subsystem->GetUserSettings()->RegisterInputMappingContext(DefaultMappingContext);
+		if (PlayerController->GetHUD())
+		{
+			AGameHUD* HUD = Cast<AGameHUD>(PlayerController->GetHUD());
+			if (!HUD) return;
+			HUD->Init(GetHealth(), HealthComp->GetMaxHealth(), WeaponComponent->GetBulletCount());
+		}
 	}
 }
 
-void AMyCharacter::UnPossessed()
-{
-	const APlayerController* PlayerController = Cast<APlayerController>(Controller);
-	if (!PlayerController) return;
-
-	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-	{
-		Subsystem->RemoveMappingContext(DefaultMappingContext);
-	}
-	Super::UnPossessed();
-}
-
-void AMyCharacter::OnDie()
+void AMyCharacter::OnDie(AActor* Actor)
 {
 	UE_LOG(LogTemp, Warning, TEXT("%s Die"), *GetName())
 }

@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "HealthComponent.generated.h"
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FHealthComponentDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHealthComponentDelegate, AActor*, Actor);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class GAMR3510ASSIGNMENT_API UHealthComponent : public UActorComponent
@@ -18,6 +18,9 @@ public:
 	UFUNCTION()
 	float GetHealth() const;
 	UFUNCTION()
+	float GetMaxHealth() const { return MaxHealth; }
+
+	UFUNCTION()
 	void TakeDamage(float Damage);
 	UPROPERTY() //Broadcast when the owner of the component die.
 	FHealthComponentDelegate DieDelegate;
@@ -29,8 +32,9 @@ protected:
 	float Health = 100;
 	UPROPERTY(EditDefaultsOnly)
 	float MaxHealth = 100;
-UFUNCTION()
+	UFUNCTION()
 	void OnRep_Health();
+
 public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;

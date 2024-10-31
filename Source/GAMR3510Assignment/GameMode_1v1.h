@@ -6,7 +6,7 @@
 #include "GameFramework/GameMode.h"
 #include "GameMode_1v1.generated.h"
 
-
+class AMyCharacter;
 /**
  * 
  */
@@ -18,8 +18,13 @@ class GAMR3510ASSIGNMENT_API AGameMode_1v1 : public AGameMode
 public:
 	AGameMode_1v1();
 
+	UPROPERTY()
+	TMap<AController*, int> PlayerDeathCount;
 	virtual bool ReadyToStartMatch_Implementation() override;
 	virtual void ResetLevel() override;
+	virtual void PostLogin(APlayerController* NewPlayer) override;
 protected:
-	virtual void BeginPlay() override;
+	virtual void RestartPlayer(AController* NewPlayer) override;
+	UFUNCTION()
+	void OnPlayerDie(AActor* Actor);
 };
