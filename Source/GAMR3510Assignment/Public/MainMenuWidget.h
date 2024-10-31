@@ -13,7 +13,7 @@ UCLASS()
 class GAMR3510ASSIGNMENT_API UMainMenuWidget : public UUserWidget
 {
 	GENERATED_BODY()
-
+	
 public:
 	virtual void NativeConstruct()override; //constructs the user widget and used for applying values to variable and functions
 
