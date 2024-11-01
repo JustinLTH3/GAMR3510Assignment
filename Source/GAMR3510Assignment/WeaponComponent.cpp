@@ -35,15 +35,15 @@ void UWeaponComponent::Shoot()
 	UE_LOG(LogTemp, Warning, TEXT("%s Shoot"), *GetOwner()->GetName())
 	FHitResult Hit;
 	UCameraComponent* Cam = Cast<AMyCharacter>(GetOwner())->GetCameraComponent();
-	GetWorld()->LineTraceSingleByChannel(Hit, Cam->GetComponentLocation(), Cam->GetForwardVector() * 1000 + Cam->GetComponentLocation(), ECC_Pawn);
-
+	FCollisionObjectQueryParams params;
+	GetWorld()->LineTraceSingleByChannel(Hit, Cam->GetComponentLocation(), Cam->GetForwardVector() * 10000 + Cam->GetComponentLocation(), ECC_Visibility);
 	if (!Hit.GetActor()) return;
-
 	AActor* HitActor = Hit.GetActor();
 	const auto HealthComp = HitActor->GetComponentByClass<UHealthComponent>();
 	UE_LOG(LogTemp, Display, TEXT("Hit Actor: %s"), *HitActor->GetName());
 	if (!HealthComp) return;
-	UGameplayStatics::ApplyDamage(HitActor, Damage, Cast<ACharacter>(GetOwner())->GetController(), GetOwner(), UDamageType::StaticClass());
+	if (Hit.BoneName == FName("Head")) UGameplayStatics::ApplyDamage(HitActor, Damage * 2, Cast<ACharacter>(GetOwner())->GetController(), GetOwner(), UDamageType::StaticClass());
+	else UGameplayStatics::ApplyDamage(HitActor, Damage, Cast<ACharacter>(GetOwner())->GetController(), GetOwner(), UDamageType::StaticClass());
 }
 
 bool UWeaponComponent::GetCanFire()
@@ -64,7 +64,7 @@ void UWeaponComponent::BeginPlay()
 		const auto HUD = Cast<AGameHUD>(Controller->GetHUD());
 		if (!HUD->BulletCountWidget) return;
 		HUD->BulletCountWidget->Update(BulletCount);
-		HUD->BulletCountWidget->SetMaxBulletCount(MagSize);
+		HUD->BulletCountWidget->SetMaxBulletCount(BulletCount);
 	}
 }
 
