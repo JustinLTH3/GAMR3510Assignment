@@ -5,6 +5,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Public/HealthBarWidget.h"
 #include "Public/BulletCountWidget.h"
+#include "Public/ScoreCounter.h"
 
 AGameHUD::AGameHUD()
 	: HealthBar(nullptr)
@@ -18,6 +19,9 @@ void AGameHUD::BeginPlay()
 	HealthBar->AddToViewport();
 	BulletCountWidget = CreateWidget<UBulletCountWidget>(GetOwningPlayerController(), BulletCountClass);
 	BulletCountWidget->AddToViewport();
+
+	ScoreCounter = CreateWidget<UScoreCounter>(GetOwningPlayerController(), ScoreCounterClass);
+	ScoreCounter->AddToViewport();
 }
 
 void AGameHUD::Init(const float Health, const float MaxHealth, const int BulletCount) const
