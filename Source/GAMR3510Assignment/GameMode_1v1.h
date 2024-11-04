@@ -23,8 +23,25 @@ public:
 	virtual bool ReadyToStartMatch_Implementation() override;
 	virtual void ResetLevel() override;
 	virtual void PostLogin(APlayerController* NewPlayer) override;
+	UPROPERTY()
+	FTimerHandle RoundTimerHandle;
+	UPROPERTY()
+	FTimerHandle RoundTimeEndHandle;
+	UPROPERTY()
+	FTimerHandle RoundTimeUpdateHandle;
+	UFUNCTION()
+	void RoundTimeRunOut();
+	UFUNCTION()
+	void RoundTimeUpdate();
+	UFUNCTION()
+	void PlayerBleeding();
+	UPROPERTY()
+	FTimerHandle BleedingTimer;
+
 protected:
 	virtual void RestartPlayer(AController* NewPlayer) override;
+	virtual void StartMatch() override;
+	virtual void EndMatch() override;
 	UFUNCTION()
 	void OnPlayerDie(AActor* Actor);
 };

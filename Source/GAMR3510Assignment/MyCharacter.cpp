@@ -93,6 +93,11 @@ void AMyCharacter::Move(const struct FInputActionValue& Value)
 	AddMovementInput(GetActorRightVector(), MovementVector.X);
 }
 
+void AMyCharacter::OnDie(AActor* Actor)
+{
+	MulticastOnDieRPC(Actor);
+}
+
 void AMyCharacter::Fire()
 {
 	if (WeaponComponent->GetCanFire())
@@ -124,6 +129,19 @@ void AMyCharacter::Look(const FInputActionValue& Value)
 	AddControllerPitchInput(-Input.Y);
 }
 
+void AMyCharacter::MulticastOnDieRPC_Implementation(AActor* Actor)
+{
+	UE_LOG(LogTemp, Warning, TEXT("%s Die"), *GetName())
+	GetMesh()->SetSimulatePhysics(true);
+	GetMesh()->SetCollisionProfileName(FName("Ragdoll"));
+	const APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (!PlayerController) return;
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+	{
+		Subsystem->RemoveMappingContext(DefaultMappingContext);
+	}
+}
+
 void AMyCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
@@ -146,9 +164,4 @@ void AMyCharacter::OnPossessed_Implementation(AController* NewController)
 			HUD->Init(GetHealth(), HealthComp->GetMaxHealth(), WeaponComponent->GetBulletCount());
 		}
 	}
-}
-
-void AMyCharacter::OnDie(AActor* Actor)
-{
-	UE_LOG(LogTemp, Warning, TEXT("%s Die"), *GetName())
 }

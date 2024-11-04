@@ -2,7 +2,9 @@
 
 #include "GameHUD.h"
 
+#include "PlayerState1v1.h"
 #include "Blueprint/UserWidget.h"
+#include "GameFramework/GameStateBase.h"
 #include "Public/HealthBarWidget.h"
 #include "Public/BulletCountWidget.h"
 #include "Public/ScoreCounter.h"
@@ -29,4 +31,5 @@ void AGameHUD::Init(const float Health, const float MaxHealth, const int BulletC
 	HealthBar->UpdateHealth(Health, MaxHealth);
 	BulletCountWidget->SetMaxBulletCount(BulletCount);
 	BulletCountWidget->Update(BulletCount);
+	ScoreCounter->UpdateScore(GetWorld()->GetGameState()->PlayerArray[0].Get()->GetScore(), GetWorld()->GetGameState()->PlayerArray[1].Get()->GetScore());
 }

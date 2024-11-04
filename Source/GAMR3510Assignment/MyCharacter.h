@@ -66,6 +66,8 @@ public:
 	UFUNCTION()
 	void Look(const FInputActionValue& Value);
 
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastOnDieRPC(AActor* Actor);
 	UFUNCTION()
 	void OnDie(AActor* Actor);
 
