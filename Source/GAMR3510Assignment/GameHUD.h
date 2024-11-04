@@ -8,6 +8,7 @@
 
 class UBulletCountWidget;
 class UHealthBarWidget;
+class UScoreCounter;
 /**
  * 
  */
@@ -18,6 +19,13 @@ class GAMR3510ASSIGNMENT_API AGameHUD : public AHUD
 
 public:
 	AGameHUD();
+
+	UPROPERTY(BlueprintReadWrite)
+	UScoreCounter* ScoreCounter;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UScoreCounter> ScoreCounterClass;
+
 	UPROPERTY(BlueprintReadWrite)
 	UHealthBarWidget* HealthBar;
 	virtual void BeginPlay() override;
@@ -27,4 +35,6 @@ public:
 	TSubclassOf<UBulletCountWidget> BulletCountClass;
 	UPROPERTY(BlueprintReadWrite)
 	UBulletCountWidget* BulletCountWidget;
+	UFUNCTION()
+	void Init(float Health, float MaxHealth, int BulletCount) const;
 };

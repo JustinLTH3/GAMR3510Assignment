@@ -5,11 +5,13 @@
 #include "HealthComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "GameHUD.h"
 #include "InputMappingContext.h"
 #include "WeaponComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "UserSettings/EnhancedInputUserSettings.h"
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -54,6 +56,7 @@ void AMyCharacter::BeginPlay()
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 	{
 		Subsystem->AddMappingContext(DefaultMappingContext, 0);
+		Subsystem->GetUserSettings()->RegisterInputMappingContext(DefaultMappingContext);
 	}
 }
 
@@ -90,6 +93,11 @@ void AMyCharacter::Move(const struct FInputActionValue& Value)
 	AddMovementInput(GetActorRightVector(), MovementVector.X);
 }
 
+void AMyCharacter::OnDie(AActor* Actor)
+{
+	MulticastOnDieRPC(Actor);
+}
+
 void AMyCharacter::Fire()
 {
 	if (WeaponComponent->GetCanFire())
@@ -121,31 +129,39 @@ void AMyCharacter::Look(const FInputActionValue& Value)
 	AddControllerPitchInput(-Input.Y);
 }
 
+void AMyCharacter::MulticastOnDieRPC_Implementation(AActor* Actor)
+{
+	UE_LOG(LogTemp, Warning, TEXT("%s Die"), *GetName())
+	GetMesh()->SetSimulatePhysics(true);
+	GetMesh()->SetCollisionProfileName(FName("Ragdoll"));
+	const APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (!PlayerController) return;
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+	{
+		Subsystem->RemoveMappingContext(DefaultMappingContext);
+	}
+}
+
 void AMyCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
-	UE_LOG(LogTemp, Warning, TEXT("AMyCharater::PossessedBy"));
+	UE_LOG(LogTemp, Warning, TEXT("AMyCharacter::PossessedBy"));
+	OnPossessed(NewController);
+}
+
+void AMyCharacter::OnPossessed_Implementation(AController* NewController)
+{
 	const APlayerController* PlayerController = Cast<APlayerController>(NewController);
 	if (!PlayerController) return;
 	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 	{
 		Subsystem->AddMappingContext(DefaultMappingContext, 0);
+		Subsystem->GetUserSettings()->RegisterInputMappingContext(DefaultMappingContext);
+		if (PlayerController->GetHUD())
+		{
+			AGameHUD* HUD = Cast<AGameHUD>(PlayerController->GetHUD());
+			if (!HUD) return;
+			HUD->Init(GetHealth(), HealthComp->GetMaxHealth(), WeaponComponent->GetBulletCount());
+		}
 	}
-}
-
-void AMyCharacter::UnPossessed()
-{
-	const APlayerController* PlayerController = Cast<APlayerController>(Controller);
-	if (!PlayerController) return;
-
-	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-	{
-		Subsystem->RemoveMappingContext(DefaultMappingContext);
-	}
-	Super::UnPossessed();
-}
-
-void AMyCharacter::OnDie()
-{
-	UE_LOG(LogTemp, Warning, TEXT("%s Die"), *GetName())
 }

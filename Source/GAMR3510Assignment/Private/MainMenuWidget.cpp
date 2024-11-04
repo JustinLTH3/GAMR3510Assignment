@@ -14,6 +14,7 @@ void UMainMenuWidget::NativeConstruct()
 	SettingsMenu = CreateWidget<USettingsMenu>(GetOwningPlayer(), SettingsMenuClass);//name of the variable, creating a widget of class USettingsMenu, with player controller,given the appearance and values from the bp
 	SettingsMenu->AddToViewport();
 	SettingsMenu->BackButton->OnClicked.AddDynamic(this, &UMainMenuWidget::ShowMenu);
+	SettingsMenu->HideMenu();
 }
 
 void UMainMenuWidget::QuitGame() {

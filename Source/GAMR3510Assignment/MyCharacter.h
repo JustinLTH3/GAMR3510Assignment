@@ -58,15 +58,18 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	virtual void PossessedBy(AController* NewController) override;
-	virtual void UnPossessed() override;
 
+	UFUNCTION(NetMulticast, Reliable)
+	void OnPossessed(AController* NewController);
 	UFUNCTION()
 	void Move(const struct FInputActionValue& Value);
 	UFUNCTION()
 	void Look(const FInputActionValue& Value);
 
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastOnDieRPC(AActor* Actor);
 	UFUNCTION()
-	void OnDie();
+	void OnDie(AActor* Actor);
 
 	UFUNCTION()
 	void Fire();
