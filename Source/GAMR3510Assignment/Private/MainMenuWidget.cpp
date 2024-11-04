@@ -10,7 +10,7 @@ void UMainMenuWidget::NativeConstruct()
 {
 	QuitButton->OnClicked.AddDynamic(this, &UMainMenuWidget::QuitGame); //binding quit game function to button
 	Settings->OnClicked.AddDynamic(this, &UMainMenuWidget::OpenSettingsMenu);
-	SettingsMenu = CreateWidget<USettingsMenu>(GetOwningPlayer(), SettingsMenuClass); //name of the variable, creating a widget of class USettingsMenu, with player controller,given the appearance and values from the bp
+	SettingsMenu = CreateWidget<USettingsMenu>(GetOwningPlayer(), SettingsMenuClass); //name of the variable, creating a widget of class USettingsMenu, with player controller, and is the same as the bp settings menu
 	SettingsMenu->AddToViewport();
 	SettingsMenu->BackButton->OnClicked.AddDynamic(this, &UMainMenuWidget::ShowMenu);
 	SettingsMenu->HideMenu();
@@ -19,6 +19,7 @@ void UMainMenuWidget::NativeConstruct()
 void UMainMenuWidget::QuitGame()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Quit"))
+	UKismetSystemLibrary::QuitGame(GetWorld(), GetOwningPlayer(), EQuitPreference::Quit, false);
 }
 
 void UMainMenuWidget::HideMenu()
