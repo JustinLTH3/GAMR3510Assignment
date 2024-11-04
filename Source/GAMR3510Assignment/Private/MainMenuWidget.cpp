@@ -11,22 +11,23 @@ void UMainMenuWidget::NativeConstruct()
 	Multiplayer->OnClicked.AddDynamic(this, &UMainMenuWidget::StartGame);
 	QuitButton->OnClicked.AddDynamic(this, &UMainMenuWidget::QuitGame); //binding quit game function to button
 	Settings->OnClicked.AddDynamic(this, &UMainMenuWidget::OpenSettingsMenu);
-	SettingsMenu = CreateWidget<USettingsMenu>(GetOwningPlayer(), SettingsMenuClass);//name of the variable, creating a widget of class USettingsMenu, with player controller, and is the same as the bp settings menu
+	SettingsMenu = CreateWidget<USettingsMenu>(GetOwningPlayer(), SettingsMenuClass); //name of the variable, creating a widget of class USettingsMenu, with player controller, and is the same as the bp settings menu
 	SettingsMenu->AddToViewport();
 	SettingsMenu->BackButton->OnClicked.AddDynamic(this, &UMainMenuWidget::ShowMenu);
 	SettingsMenu->HideMenu();
 }
 
-void UMainMenuWidget::QuitGame() {
-
+void UMainMenuWidget::QuitGame()
+{
 	UE_LOG(LogTemp, Warning, TEXT("Quit"))
+	UKismetSystemLibrary::QuitGame(GetWorld(), GetOwningPlayer(), EQuitPreference::Quit, false);
 }
 
 void UMainMenuWidget::StartGame()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Game Started"))
 
-		FName LevelName = "UI_Testing";  // The name of the level you want to load
+	FName LevelName = "UI_Testing"; // The name of the level you want to load
 	UGameplayStatics::OpenLevel(this, LevelName);
 }
 
@@ -47,6 +48,3 @@ void UMainMenuWidget::OpenSettingsMenu()
 	HideMenu();
 	SettingsMenu->SetVisibility(ESlateVisibility::Visible);
 }
-
-
-
