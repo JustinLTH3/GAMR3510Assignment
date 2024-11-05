@@ -33,16 +33,24 @@ void UWeaponComponent::Shoot()
 	OnRep_BulletCount();
 	GetWorld()->GetTimerManager().SetTimer(FireRateTimerHandle, [this]() { bCanFire = true; }, FireRate, false);
 	UE_LOG(LogTemp, Warning, TEXT("%s Shoot"), *GetOwner()->GetName())
-	FHitResult Hit;
+	FHitResult HitFromCam;
 	UCameraComponent* Cam = Cast<AMyCharacter>(GetOwner())->GetCameraComponent();
-	FCollisionObjectQueryParams params;
-	GetWorld()->LineTraceSingleByChannel(Hit, Cam->GetComponentLocation(), Cam->GetForwardVector() * 10000 + Cam->GetComponentLocation(), ECC_Visibility);
-	if (!Hit.GetActor()) return;
-	AActor* HitActor = Hit.GetActor();
+	FCollisionQueryParams params;
+	params.AddIgnoredActor(GetOwner());
+	GetWorld()->LineTraceSingleByChannel(HitFromCam, Cam->GetComponentLocation(), Cam->GetForwardVector() * 10000 + Cam->GetComponentLocation(), ECC_Visibility, params);
+	if (HitFromCam.GetActor()) DrawDebugLine(GetWorld(), GetComponentLocation(), HitFromCam.Location, FColor::Yellow, false, 3, 0, 3);
+else  DrawDebugLine(GetWorld(), GetComponentLocation(), Cam->GetForwardVector() * 10000 + Cam->GetComponentLocation(), FColor::Yellow, false, 3, 0, 3);
+
+	if (!HitFromCam.GetActor()) return;
+	FHitResult HitFromWeapon;
+	GetWorld()->LineTraceSingleByChannel(HitFromWeapon, GetComponentLocation(), HitFromCam.Location, ECC_Visibility, params);
+	AActor* HitActor;
+	if (HitFromWeapon.GetActor()) HitActor = HitFromWeapon.GetActor();
+	else HitActor = HitFromCam.GetActor();
 	const auto HealthComp = HitActor->GetComponentByClass<UHealthComponent>();
 	UE_LOG(LogTemp, Display, TEXT("Hit Actor: %s"), *HitActor->GetName());
 	if (!HealthComp) return;
-	if (Hit.BoneName == FName("Head")) UGameplayStatics::ApplyDamage(HitActor, Damage * 2, Cast<ACharacter>(GetOwner())->GetController(), GetOwner(), UDamageType::StaticClass());
+	if (HitFromCam.BoneName == FName("Head")) UGameplayStatics::ApplyDamage(HitActor, Damage * 2, Cast<ACharacter>(GetOwner())->GetController(), GetOwner(), UDamageType::StaticClass());
 	else UGameplayStatics::ApplyDamage(HitActor, Damage, Cast<ACharacter>(GetOwner())->GetController(), GetOwner(), UDamageType::StaticClass());
 }
 

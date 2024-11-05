@@ -28,7 +28,7 @@ AMyCharacter::AMyCharacter()
 	SpringArm->SetupAttachment(GetCapsuleComponent());
 	SpringArm->TargetArmLength = 400;
 	CameraComp->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
-	WeaponComponent->SetupAttachment(RootComponent);
+	WeaponComponent->SetupAttachment(GetMesh(),FName("hand_r"));
 
 	CameraComp->bUsePawnControlRotation = false;
 	SpringArm->bUsePawnControlRotation = true;
