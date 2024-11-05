@@ -70,12 +70,14 @@ void AGameMode_1v1::EndMatch()
 
 void AGameMode_1v1::ResetLevel()
 {
+	UE_LOG(LogTemp, Warning, TEXT("ResetLevel"));
 	Super::ResetLevel();
 	for (auto X = GetWorld()->GetPlayerControllerIterator(); X; ++X)
 	{
 		RestartPlayer(X->Get());
 	}
 	GetWorld()->GetTimerManager().SetTimer(RoundTimerHandle, this, &AGameMode_1v1::RoundTimeRunOut, 60);
+	GetWorld()->GetTimerManager().SetTimer(RoundTimeUpdateHandle, this, &AGameMode_1v1::RoundTimeUpdate, .5f, true);
 }
 
 void AGameMode_1v1::PostLogin(APlayerController* NewPlayer)
@@ -99,9 +101,11 @@ void AGameMode_1v1::OnPlayerDie(AActor* Actor)
 				Player->OnRep_Score();
 			}
 		}
+		UE_LOG(LogTemp, Warning, TEXT("OnPlayerDie Reset"))
 		auto y = &AGameMode_1v1::ResetLevel;
 		if (PlayerDeathCount[x->GetController()] == 5) y = &AGameMode_1v1::EndMatch;
-		if (GetWorldTimerManager().TimerExists(RoundTimerHandle)) GetWorldTimerManager().SetTimer(RoundTimeEndHandle, this, y, 3);
+		if (GetWorldTimerManager().TimerExists(RoundTimerHandle)) GetWorldTimerManager().ClearTimer(RoundTimerHandle);
+		if (!GetWorldTimerManager().TimerExists(RoundTimeEndHandle)) GetWorldTimerManager().SetTimer(RoundTimeEndHandle, this, y, 3);
 	}
 }
 
