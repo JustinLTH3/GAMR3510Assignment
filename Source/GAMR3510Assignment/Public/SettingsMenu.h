@@ -13,14 +13,14 @@ UCLASS()
 class GAMR3510ASSIGNMENT_API USettingsMenu : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
 public:
-	virtual void NativeConstruct()override;
+	virtual void NativeConstruct() override;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UButton* BackButton;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void HideMenu();
 
 	UFUNCTION()

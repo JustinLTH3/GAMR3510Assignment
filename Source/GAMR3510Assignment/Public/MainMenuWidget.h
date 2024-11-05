@@ -23,7 +23,7 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UButton* QuitButton;
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	class USettingsMenu* SettingsMenu;
 	UPROPERTY(EditDefaultsOnly) //make it appear in editor
 	TSubclassOf<USettingsMenu> SettingsMenuClass;
@@ -34,7 +34,7 @@ public:
 	UFUNCTION()
 	void HideMenu();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void ShowMenu();
 
 	UFUNCTION()
