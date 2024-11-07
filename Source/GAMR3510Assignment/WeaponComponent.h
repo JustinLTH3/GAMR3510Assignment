@@ -53,6 +53,6 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
 protected:
-	UPROPERTY()
+	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* StaticMeshComponent;
 };
