@@ -6,8 +6,8 @@
 #include "Components/SceneComponent.h"
 #include "WeaponComponent.generated.h"
 
-UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class GAMR3510ASSIGNMENT_API UWeaponComponent : public USceneComponent
+UCLASS(Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
+class GAMR3510ASSIGNMENT_API UWeaponComponent : public UStaticMeshComponent
 {
 	GENERATED_BODY()
 
@@ -51,8 +51,4 @@ public:
 	void Shoot();
 
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
-
-protected:
-	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* StaticMeshComponent;
 };

@@ -17,8 +17,6 @@ UWeaponComponent::UWeaponComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 	SetIsReplicatedByDefault(true);
-	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
-	StaticMeshComponent->SetupAttachment(this);
 }
 
 void UWeaponComponent::Shoot()
@@ -40,12 +38,12 @@ void UWeaponComponent::Shoot()
 	FCollisionQueryParams params;
 	params.AddIgnoredActor(GetOwner());
 	GetWorld()->LineTraceSingleByChannel(HitFromCam, Cam->GetComponentLocation(), Cam->GetForwardVector() * 10000 + Cam->GetComponentLocation(), ECC_Visibility, params);
-	if (HitFromCam.GetActor()) DrawDebugLine(GetWorld(), GetComponentLocation(), HitFromCam.Location, FColor::Yellow, false, 3, 0, 3);
-else  DrawDebugLine(GetWorld(), GetComponentLocation(), Cam->GetForwardVector() * 10000 + Cam->GetComponentLocation(), FColor::Yellow, false, 3, 0, 3);
+	if (HitFromCam.GetActor()) DrawDebugLine(GetWorld(), GetSocketLocation(FName("Muzzle")), HitFromCam.Location, FColor::Yellow, false, 3, 0, 3);
+	else DrawDebugLine(GetWorld(), GetSocketLocation(FName("Muzzle")), Cam->GetForwardVector() * 10000 + Cam->GetComponentLocation(), FColor::Yellow, false, 3, 0, 3);
 
 	if (!HitFromCam.GetActor()) return;
 	FHitResult HitFromWeapon;
-	GetWorld()->LineTraceSingleByChannel(HitFromWeapon, GetComponentLocation(), HitFromCam.Location, ECC_Visibility, params);
+	GetWorld()->LineTraceSingleByChannel(HitFromWeapon, GetSocketLocation(FName("Muzzle")), HitFromCam.Location, ECC_Visibility, params);
 	AActor* HitActor;
 	if (HitFromWeapon.GetActor()) HitActor = HitFromWeapon.GetActor();
 	else HitActor = HitFromCam.GetActor();

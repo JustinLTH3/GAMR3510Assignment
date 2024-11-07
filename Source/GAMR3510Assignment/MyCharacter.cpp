@@ -28,7 +28,7 @@ AMyCharacter::AMyCharacter()
 	SpringArm->SetupAttachment(GetCapsuleComponent());
 	SpringArm->TargetArmLength = 400;
 	CameraComp->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
-	WeaponComponent->SetupAttachment(GetMesh(),FName("hand_r_weapon_socket"));
+	WeaponComponent->SetupAttachment(GetMesh(), FName("hand_r_weapon_socket"));
 
 	CameraComp->bUsePawnControlRotation = false;
 	SpringArm->bUsePawnControlRotation = true;
@@ -95,6 +95,7 @@ void AMyCharacter::Move(const struct FInputActionValue& Value)
 
 void AMyCharacter::OnDie(AActor* Actor)
 {
+	WeaponComponent->SetSimulatePhysics(true);
 	MulticastOnDieRPC(Actor);
 }
 
