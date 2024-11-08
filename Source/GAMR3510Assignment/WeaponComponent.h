@@ -43,12 +43,16 @@ protected:
 	int BulletCount;
 	UFUNCTION()
 	void OnRep_BulletCount();
+	UPROPERTY(EditDefaultsOnly)
+	class UNiagaraSystem* FireEffectMuzzle;
 
 public:
 	UFUNCTION()
 	void ReloadWeapon();
 	UFUNCTION()
 	void Shoot();
+	UFUNCTION(NetMulticast, Reliable)
+	void NetMulticastFire(const FVector& Start, const FVector& End);
 
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 };

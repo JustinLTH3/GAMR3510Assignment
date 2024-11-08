@@ -66,6 +66,7 @@ void AGameMode_1v1::StartMatch()
 void AGameMode_1v1::EndMatch()
 {
 	Super::EndMatch();
+	ReturnToMainMenuHost();
 }
 
 void AGameMode_1v1::ResetLevel()
