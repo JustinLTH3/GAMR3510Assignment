@@ -20,9 +20,15 @@ public:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UButton* BackButton;
 
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UButton* MainMenuButton;
+
 	UFUNCTION(BlueprintCallable)
 	void HideMenu();
 
 	UFUNCTION()
 	void ShowMenu();
+
+	UFUNCTION()
+	void returnToMainMenu();
 };
