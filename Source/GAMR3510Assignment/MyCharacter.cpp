@@ -10,6 +10,8 @@
 #include "WeaponComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/AudioComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "UserSettings/EnhancedInputUserSettings.h"
 
@@ -79,6 +81,7 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		EnhancedInputComponent->BindAction(IA_Move, ETriggerEvent::Triggered, this, &AMyCharacter::Move);
+		EnhancedInputComponent->BindAction(IA_Move, ETriggerEvent::Completed, this, &AMyCharacter::Move);
 		EnhancedInputComponent->BindAction(IA_Fire, ETriggerEvent::Triggered, this, &AMyCharacter::Fire);
 		EnhancedInputComponent->BindAction(IA_Look, ETriggerEvent::Triggered, this, &AMyCharacter::Look);
 		EnhancedInputComponent->BindAction(IA_Jump, ETriggerEvent::Started, this, &AMyCharacter::Jump);
@@ -91,6 +94,19 @@ void AMyCharacter::Move(const struct FInputActionValue& Value)
 	FVector2D MovementVector = Value.Get<FVector2D>();
 	AddMovementInput(GetActorForwardVector(), MovementVector.Y);
 	AddMovementInput(GetActorRightVector(), MovementVector.X);
+
+	if (!AudioSound&&!MovementVector.IsZero())
+	{
+		AudioSound = UGameplayStatics::SpawnSoundAttached(WalkSound, RootComponent);
+		AudioSound->bAutoDestroy = true;
+		//AudioSound->SetSound(WalkSound);
+		//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Walk Sound Works")));
+	}
+	else if (MovementVector.IsZero()) {
+		AudioSound->DestroyComponent();
+		AudioSound->Stop();
+		AudioSound = nullptr;
+	}
 }
 
 void AMyCharacter::Fire()

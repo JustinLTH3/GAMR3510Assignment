@@ -51,6 +51,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Weapon")
 	UWeaponComponent* WeaponComponent;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Component")
+	class USoundBase* WalkSound;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
+	class UAudioComponent* AudioSound;
+
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
