@@ -19,15 +19,16 @@ AGameMode_1v1::AGameMode_1v1()
 bool AGameMode_1v1::ReadyToStartMatch_Implementation()
 {
 	if (NumPlayers == 2)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Match ready!!"));
-		for (auto X = GetWorld()->GetPlayerControllerIterator(); X; ++X)
+		if (GetWorld()->GetNumPlayerControllers() == 2)
 		{
-			//Check each client has loaded the world before the match is start.
-			if (!X->Get()->HasClientLoadedCurrentWorld()) return false;
+			for (auto X = GetWorld()->GetPlayerControllerIterator(); X; ++X)
+			{
+				//Check each client has loaded the world before the match is start.
+				if (!X->Get()->HasClientLoadedCurrentWorld()) return false;
+			}
+			UE_LOG(LogTemp, Warning, TEXT("Match ready!!"));
+			return true;
 		}
-		return true;
-	}
 	return false;
 }
 
@@ -69,6 +70,18 @@ void AGameMode_1v1::EndMatch()
 	ReturnToMainMenuHost();
 }
 
+void AGameMode_1v1::DecideWinner()
+{
+	TArray<APlayerState*> Winners;
+	for (int i = 0; i < NumPlayers; ++i)
+	{
+		if (GameState->PlayerArray[i]->GetScore() == 5) Winners.AddUnique(GameState->PlayerArray[i]);
+	}
+	if (Winners.Num() == 2) UE_LOG(LogTemp, Warning, TEXT("Draw"))
+	else UE_LOG(LogTemp, Warning, TEXT("Winner Is %s"), *Winners.Last()->GetPlayerName());
+	GetWorldTimerManager().SetTimer(RoundTimeEndHandle, this, &AGameMode_1v1::EndMatch, 3);
+}
+
 void AGameMode_1v1::ResetLevel()
 {
 	UE_LOG(LogTemp, Warning, TEXT("ResetLevel"));
@@ -103,10 +116,15 @@ void AGameMode_1v1::OnPlayerDie(AActor* Actor)
 			}
 		}
 		UE_LOG(LogTemp, Warning, TEXT("OnPlayerDie Reset"))
-		auto y = &AGameMode_1v1::ResetLevel;
-		if (PlayerDeathCount[x->GetController()] == 5) y = &AGameMode_1v1::EndMatch;
+		auto func = &AGameMode_1v1::ResetLevel;
+		float timer = 4;
+		if (PlayerDeathCount[x->GetController()] == 5)
+		{
+			func = &AGameMode_1v1::DecideWinner;
+			timer = 1;
+		}
 		if (GetWorldTimerManager().TimerExists(RoundTimerHandle)) GetWorldTimerManager().ClearTimer(RoundTimerHandle);
-		if (!GetWorldTimerManager().TimerExists(RoundTimeEndHandle)) GetWorldTimerManager().SetTimer(RoundTimeEndHandle, this, y, 3);
+		if (!GetWorldTimerManager().TimerExists(RoundTimeEndHandle)) GetWorldTimerManager().SetTimer(RoundTimeEndHandle, this, func, timer);
 	}
 }
 

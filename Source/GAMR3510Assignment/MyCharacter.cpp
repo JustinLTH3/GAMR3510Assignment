@@ -57,6 +57,12 @@ void AMyCharacter::BeginPlay()
 	{
 		Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		Subsystem->GetUserSettings()->RegisterInputMappingContext(DefaultMappingContext);
+		if (PlayerController->GetHUD())
+		{
+			AGameHUD* HUD = Cast<AGameHUD>(PlayerController->GetHUD());
+			if (!HUD) return;
+			HUD->Init(GetHealth(), HealthComp->GetMaxHealth(), WeaponComponent->GetBulletCount());
+		}
 	}
 }
 

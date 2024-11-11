@@ -43,5 +43,7 @@ protected:
 	virtual void StartMatch() override;
 	virtual void EndMatch() override;
 	UFUNCTION()
+	void DecideWinner();
+	UFUNCTION()
 	void OnPlayerDie(AActor* Actor);
 };
