@@ -7,6 +7,7 @@
 #include "MyCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/GameSession.h"
 #include "GameFramework/GameStateBase.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/PlayerState.h"
@@ -68,6 +69,7 @@ void AGameMode_1v1::EndMatch()
 {
 	Super::EndMatch();
 	ReturnToMainMenuHost();
+	GameSession.Get()->Destroy();
 }
 
 void AGameMode_1v1::DecideWinner()
