@@ -5,6 +5,8 @@
 #include "MainMenuWidget.h"
 #include "Components/Button.h"
 
+#include "Kismet/GameplayStatics.h" //needed for level loading function
+
 void USettingsMenu::NativeConstruct()
 {
 	//HideMenu(); //menu is hidden immedietly
@@ -22,5 +24,10 @@ void USettingsMenu::HideMenu()
 void USettingsMenu::ShowMenu()
 {
 	this->SetVisibility(ESlateVisibility::Visible);
+
+}
+
+void USettingsMenu::returnToMainMenu()
+{
 
 }

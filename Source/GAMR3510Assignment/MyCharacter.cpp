@@ -30,7 +30,7 @@ AMyCharacter::AMyCharacter()
 	SpringArm->SetupAttachment(GetCapsuleComponent());
 	SpringArm->TargetArmLength = 400;
 	CameraComp->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
-	WeaponComponent->SetupAttachment(RootComponent);
+	WeaponComponent->SetupAttachment(GetMesh(), FName("hand_r_weapon_socket"));
 
 	CameraComp->bUsePawnControlRotation = false;
 	SpringArm->bUsePawnControlRotation = true;
@@ -59,6 +59,12 @@ void AMyCharacter::BeginPlay()
 	{
 		Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		Subsystem->GetUserSettings()->RegisterInputMappingContext(DefaultMappingContext);
+		if (PlayerController->GetHUD())
+		{
+			AGameHUD* HUD = Cast<AGameHUD>(PlayerController->GetHUD());
+			if (!HUD) return;
+			HUD->Init(GetHealth(), HealthComp->GetMaxHealth(), WeaponComponent->GetBulletCount());
+		}
 	}
 }
 
@@ -109,6 +115,12 @@ void AMyCharacter::Move(const struct FInputActionValue& Value)
 	}
 }
 
+void AMyCharacter::OnDie(AActor* Actor)
+{
+	WeaponComponent->SetSimulatePhysics(true);
+	MulticastOnDieRPC(Actor);
+}
+
 void AMyCharacter::Fire()
 {
 	if (WeaponComponent->GetCanFire())
@@ -140,6 +152,19 @@ void AMyCharacter::Look(const FInputActionValue& Value)
 	AddControllerPitchInput(-Input.Y);
 }
 
+void AMyCharacter::MulticastOnDieRPC_Implementation(AActor* Actor)
+{
+	UE_LOG(LogTemp, Warning, TEXT("%s Die"), *GetName())
+	GetMesh()->SetSimulatePhysics(true);
+	GetMesh()->SetCollisionProfileName(FName("Ragdoll"));
+	const APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (!PlayerController) return;
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+	{
+		Subsystem->RemoveMappingContext(DefaultMappingContext);
+	}
+}
+
 void AMyCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
@@ -162,9 +187,4 @@ void AMyCharacter::OnPossessed_Implementation(AController* NewController)
 			HUD->Init(GetHealth(), HealthComp->GetMaxHealth(), WeaponComponent->GetBulletCount());
 		}
 	}
-}
-
-void AMyCharacter::OnDie(AActor* Actor)
-{
-	UE_LOG(LogTemp, Warning, TEXT("%s Die"), *GetName())
 }

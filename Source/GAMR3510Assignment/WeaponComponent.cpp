@@ -10,13 +10,15 @@
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
+#include "Components/StaticMeshComponent.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 
 // Sets default values for this component's properties
 UWeaponComponent::UWeaponComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 	SetIsReplicatedByDefault(true);
-	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 }
 
 void UWeaponComponent::Shoot()
@@ -33,17 +35,37 @@ void UWeaponComponent::Shoot()
 	OnRep_BulletCount();
 	GetWorld()->GetTimerManager().SetTimer(FireRateTimerHandle, [this]() { bCanFire = true; }, FireRate, false);
 	UE_LOG(LogTemp, Warning, TEXT("%s Shoot"), *GetOwner()->GetName())
-	FHitResult Hit;
+	FHitResult HitFromCam;
 	UCameraComponent* Cam = Cast<AMyCharacter>(GetOwner())->GetCameraComponent();
-	GetWorld()->LineTraceSingleByChannel(Hit, Cam->GetComponentLocation(), Cam->GetForwardVector() * 1000 + Cam->GetComponentLocation(), ECC_Pawn);
-
-	if (!Hit.GetActor()) return;
-
-	AActor* HitActor = Hit.GetActor();
+	FCollisionQueryParams params;
+	params.AddIgnoredActor(GetOwner());
+	GetWorld()->LineTraceSingleByChannel(HitFromCam, Cam->GetComponentLocation(), Cam->GetForwardVector() * 10000 + Cam->GetComponentLocation(), ECC_Visibility, params);
+	if (HitFromCam.GetActor())
+	{
+		NetMulticastFire(GetSocketLocation(FName("Muzzle")), HitFromCam.Location - GetSocketLocation(FName("Muzzle")));
+	}
+	else
+	{
+		NetMulticastFire(GetSocketLocation(FName("Muzzle")), Cam->GetForwardVector() * 10000);
+	}
+	if (!HitFromCam.GetActor()) return;
+	FHitResult HitFromWeapon;
+	GetWorld()->LineTraceSingleByChannel(HitFromWeapon, GetSocketLocation(FName("Muzzle")), HitFromCam.Location, ECC_Visibility, params);
+	AActor* HitActor;
+	if (HitFromWeapon.GetActor()) HitActor = HitFromWeapon.GetActor();
+	else HitActor = HitFromCam.GetActor();
 	const auto HealthComp = HitActor->GetComponentByClass<UHealthComponent>();
 	UE_LOG(LogTemp, Display, TEXT("Hit Actor: %s"), *HitActor->GetName());
 	if (!HealthComp) return;
-	UGameplayStatics::ApplyDamage(HitActor, Damage, Cast<ACharacter>(GetOwner())->GetController(), GetOwner(), UDamageType::StaticClass());
+	if (HitFromCam.BoneName == FName("Head")) UGameplayStatics::ApplyDamage(HitActor, Damage * 2, Cast<ACharacter>(GetOwner())->GetController(), GetOwner(), UDamageType::StaticClass());
+	else UGameplayStatics::ApplyDamage(HitActor, Damage, Cast<ACharacter>(GetOwner())->GetController(), GetOwner(), UDamageType::StaticClass());
+}
+
+void UWeaponComponent::NetMulticastFire_Implementation(const FVector& Start, const FVector& End)
+{
+	UNiagaraComponent* NiagaraComp = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), FireEffectMuzzle, Start, FRotator(0), FVector(1), true, false);
+	NiagaraComp->SetVariableVec3(FName("Beam End"), End);
+	NiagaraComp->Activate();
 }
 
 bool UWeaponComponent::GetCanFire()
@@ -55,31 +77,22 @@ void UWeaponComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	BulletCount = MagSize;
-	if (ACharacter* Character = Cast<ACharacter>(GetOwner()))
-	{
-		if (!Character->GetController()) return;
-		const auto Controller = Cast<APlayerController>(Character->GetController());
-		if (!Controller) return;
-		if (!Controller->GetHUD()) return;
-		const auto HUD = Cast<AGameHUD>(Controller->GetHUD());
-		if (!HUD->BulletCountWidget) return;
-		HUD->BulletCountWidget->Update(BulletCount);
-		HUD->BulletCountWidget->SetMaxBulletCount(MagSize);
-	}
+	OnRep_BulletCount();
 }
 
 void UWeaponComponent::OnRep_BulletCount()
 {
-	if (ACharacter* Character = Cast<ACharacter>(GetOwner()))
-	{
-		if (!Character->GetController()) return;
-		const auto Controller = Cast<APlayerController>(Character->GetController());
-		if (!Controller) return;
-		if (!Controller->GetHUD()) return;
-		const auto HUD = Cast<AGameHUD>(Controller->GetHUD());
-		if (!HUD->BulletCountWidget) return;
-		HUD->BulletCountWidget->Update(BulletCount);
-	}
+	const ACharacter* Character = Cast<ACharacter>(GetOwner());
+	if (!Character) return;
+
+	if (!Character->GetController()) return;
+	const auto Controller = Cast<APlayerController>(Character->GetController());
+	if (!Controller) return;
+	if (!Controller->GetHUD()) return;
+	const auto HUD = Cast<AGameHUD>(Controller->GetHUD());
+	if (!HUD->BulletCountWidget) return;
+	HUD->BulletCountWidget->Update(BulletCount);
+	HUD->BulletCountWidget->SetMaxBulletCount(MagSize);
 }
 
 void UWeaponComponent::ReloadWeapon()
