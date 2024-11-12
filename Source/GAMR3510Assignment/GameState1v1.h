@@ -27,4 +27,11 @@ public:
 	UFUNCTION()
 	void OnRep_RoundTimeLeft();
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	UPROPERTY(ReplicatedUsing=OnRep_Winner)
+	APlayerState* Winner;
+	UPROPERTY(ReplicatedUsing=OnRep_Winner)
+	bool bIsDraw = false;
+	UFUNCTION()
+	void OnRep_Winner();
+	virtual void OnRep_MatchState() override;
 };

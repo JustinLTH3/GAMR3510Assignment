@@ -4,6 +4,7 @@
 
 #include "GameState1v1.h"
 #include "HealthComponent.h"
+#include "MultiplayerSessionsSubsystem.h"
 #include "MyCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 #include "GameFramework/Character.h"
@@ -68,8 +69,9 @@ void AGameMode_1v1::StartMatch()
 void AGameMode_1v1::EndMatch()
 {
 	Super::EndMatch();
+	auto GameInstance = GetGameInstance();
+	if (GameInstance) GameInstance->GetSubsystem<UMultiplayerSessionsSubsystem>()->DestroySession();
 	ReturnToMainMenuHost();
-	GameSession.Get()->Destroy();
 }
 
 void AGameMode_1v1::DecideWinner()
@@ -79,8 +81,20 @@ void AGameMode_1v1::DecideWinner()
 	{
 		if (GameState->PlayerArray[i]->GetScore() == 5) Winners.AddUnique(GameState->PlayerArray[i]);
 	}
-	if (Winners.Num() == 2) UE_LOG(LogTemp, Warning, TEXT("Draw"))
-	else UE_LOG(LogTemp, Warning, TEXT("Winner Is %s"), *Winners.Last()->GetPlayerName());
+	if (Winners.Num() == 2)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Draw"))
+		AGameState1v1* GameState1V1 = GetGameState<AGameState1v1>();
+		GameState1V1->bIsDraw = true;
+		GameState1V1->OnRep_Winner();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Winner Is %s"), *Winners.Last()->GetPlayerName());
+		AGameState1v1* GameState1V1 = GetGameState<AGameState1v1>();
+		GameState1V1->Winner = Winners.Last();
+		GameState1V1->OnRep_Winner();
+	}
 	GetWorldTimerManager().SetTimer(RoundTimeEndHandle, this, &AGameMode_1v1::EndMatch, 3);
 }
 

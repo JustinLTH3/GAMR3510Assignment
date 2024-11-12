@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "ScoreCounter.generated.h"
 
+class UTextBlock;
 /**
  * 
  */
@@ -13,21 +14,26 @@ UCLASS()
 class GAMR3510ASSIGNMENT_API UScoreCounter : public UUserWidget
 {
 	GENERATED_BODY()
+
 public:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	class UTextBlock* p1Score; 
+	UTextBlock* p1Score;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	class UTextBlock* p2Score; 
+	UTextBlock* p2Score;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	class UTextBlock* p1Name;  
+	UTextBlock* p1Name;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	class UTextBlock* p2Name; 
+	UTextBlock* p2Name;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	class UTextBlock* TimerText;
+	UTextBlock* TimerText;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* WinnerText;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UTextBlock* WinText;
 
 	void UpdateScore(int p1Points, int p2Points);
 
