@@ -6,17 +6,18 @@
 
 void UHealthBarWidget::UpdateHealth(float CurrentHealth, float MaxHealth)
 {
-	UE_LOG(LogTemp, Warning, TEXT("function has been called"));
+	//calculating percentage of max health
 	CurrentHealth = FMath::Clamp(CurrentHealth / MaxHealth, 0.0f, 1.0f);
 
+	//setting current health
 	if (HealthBar)
 	{
 		HealthBar->SetPercent(CurrentHealth);
 	}
 
+	//displaying current health as percentage text
 	if (HealthText)
 	{
 		HealthText->SetText(FText::AsPercent(HealthBar->GetPercent()));
-		// HealthAmount->SetText(FText::AsNumber(CurrentHealth));
 	}
 }

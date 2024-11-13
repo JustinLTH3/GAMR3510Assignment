@@ -14,4 +14,5 @@ class GAMR3510ASSIGNMENT_API UCrossHairWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	
+	//crosshair widget does not have any functionalities, it is only cosmetic
 };

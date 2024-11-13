@@ -15,28 +15,38 @@ class GAMR3510ASSIGNMENT_API UMainMenuWidget : public UMenu
 	GENERATED_BODY()
 
 public:
-	virtual void NativeConstruct() override; //constructs the user widget and used for applying values to variable and functions
+	//constructs the user widget and used for applying values to variable and functions
+	virtual void NativeConstruct() override; 
 
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget)) //basically if the name of the variable here is the 
-	//same as the one in BP then you can access the BP one
-	class UButton* Settings;
+	//using "UPROPERTY(BlueprintReadWrite, meta = (BindWidget))" to bind widgets with c++
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget)) 
+	class UButton* SettingsButton;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UButton* QuitButton;
+
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class USettingsMenu* SettingsMenu;
-	UPROPERTY(EditDefaultsOnly) //make it appear in editor
+
+	//make it appear in editor
+	UPROPERTY(EditDefaultsOnly) 
 	TSubclassOf<USettingsMenu> SettingsMenuClass;
 
-	UFUNCTION() //need it to bind functions
+	//need it to bind functions
+	//quit game function
+	UFUNCTION() 
 	void QuitGame();
 
+	//hide menu function
 	UFUNCTION()
 	void HideMenu();
 
+	//show menu function, can be called within blueprint
 	UFUNCTION(BlueprintCallable)
 	void ShowMenu();
 
+	//open settins function
 	UFUNCTION()
 	void OpenSettingsMenu();
 };
