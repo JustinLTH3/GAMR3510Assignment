@@ -101,14 +101,19 @@ void AMyCharacter::Move(const struct FInputActionValue& Value)
 	AddMovementInput(GetActorForwardVector(), MovementVector.Y);
 	AddMovementInput(GetActorRightVector(), MovementVector.X);
 
-	if (!AudioSound&&!MovementVector.IsZero())
+	NetMulticastFootStepRPC(MovementVector);
+}
+
+void AMyCharacter::NetMulticastFootStepRPC_Implementation(FVector2D Input)
+{
+	if (!AudioSound && !Input.IsZero())
 	{
 		AudioSound = UGameplayStatics::SpawnSoundAttached(WalkSound, RootComponent);
 		AudioSound->bAutoDestroy = true;
 		//AudioSound->SetSound(WalkSound);
 		//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Walk Sound Works")));
 	}
-	else if (MovementVector.IsZero()) {
+	else if (Input.IsZero()) {
 		AudioSound->DestroyComponent();
 		AudioSound->Stop();
 		AudioSound = nullptr;
@@ -155,7 +160,7 @@ void AMyCharacter::Look(const FInputActionValue& Value)
 void AMyCharacter::MulticastOnDieRPC_Implementation(AActor* Actor)
 {
 	UE_LOG(LogTemp, Warning, TEXT("%s Die"), *GetName())
-	GetMesh()->SetSimulatePhysics(true);
+		GetMesh()->SetSimulatePhysics(true);
 	GetMesh()->SetCollisionProfileName(FName("Ragdoll"));
 	const APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	if (!PlayerController) return;
