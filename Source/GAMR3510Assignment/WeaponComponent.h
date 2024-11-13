@@ -46,6 +46,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	class UNiagaraSystem* FireEffectMuzzle;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Component")
+	class USoundBase* GunSound;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
+	class UAudioComponent* GunAudio;
+
 public:
 	UFUNCTION()
 	void ReloadWeapon();

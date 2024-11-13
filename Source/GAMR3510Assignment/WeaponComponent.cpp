@@ -6,8 +6,10 @@
 #include "GameHUD.h"
 #include "HealthComponent.h"
 #include "MyCharacter.h"
+//#include "MyCharacter.cpp"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
+#include "Components/AudioComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "Components/StaticMeshComponent.h"
@@ -59,13 +61,27 @@ void UWeaponComponent::Shoot()
 	if (!HealthComp) return;
 	if (HitFromCam.BoneName == FName("Head")) UGameplayStatics::ApplyDamage(HitActor, Damage * 2, Cast<ACharacter>(GetOwner())->GetController(), GetOwner(), UDamageType::StaticClass());
 	else UGameplayStatics::ApplyDamage(HitActor, Damage, Cast<ACharacter>(GetOwner())->GetController(), GetOwner(), UDamageType::StaticClass());
+
+	
 }
+
+
 
 void UWeaponComponent::NetMulticastFire_Implementation(const FVector& Start, const FVector& End)
 {
 	UNiagaraComponent* NiagaraComp = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), FireEffectMuzzle, Start, FRotator(0), FVector(1), true, false);
 	NiagaraComp->SetVariableVec3(FName("Beam End"), End);
 	NiagaraComp->Activate();
+
+	{
+		
+		GunAudio = UGameplayStatics::SpawnSoundAttached(GunSound, GetOwner()->GetRootComponent());
+		GunAudio->bAutoDestroy = true;
+		//AudioSound->SetSound(WalkSound);
+		//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Walk Sound Works")));
+	}
+
+
 }
 
 bool UWeaponComponent::GetCanFire()

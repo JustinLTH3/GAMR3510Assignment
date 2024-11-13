@@ -75,6 +75,8 @@ public:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastOnDieRPC(AActor* Actor);
+	UFUNCTION(NetMulticast,Reliable)
+	void NetMulticastFootStepRPC(FVector2D Input);
 	UFUNCTION()
 	void OnDie(AActor* Actor);
 
