@@ -19,6 +19,8 @@ void AGameState1v1::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLif
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(AGameState1v1, RoundTimeLeft)
+	DOREPLIFETIME(AGameState1v1, Winner)
+	DOREPLIFETIME(AGameState1v1, bIsDraw)
 }
 
 void AGameState1v1::OnRep_Winner()

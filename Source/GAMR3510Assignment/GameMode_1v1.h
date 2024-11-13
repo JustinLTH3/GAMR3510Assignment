@@ -37,6 +37,9 @@ public:
 	void PlayerBleeding();
 	UPROPERTY()
 	FTimerHandle BleedingTimer;
+	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
+	UPROPERTY()
+	AActor* PlayerStart;
 
 protected:
 	virtual void RestartPlayer(AController* NewPlayer) override;

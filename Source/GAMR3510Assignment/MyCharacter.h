@@ -53,10 +53,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Component")
 	class USoundBase* WalkSound;
-	
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
 	class UAudioComponent* AudioSound;
-
 
 public:
 	// Called every frame
@@ -65,25 +64,38 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	virtual void PossessedBy(AController* NewController) override;
-
+	virtual void UnPossessed() override;
 	UFUNCTION(NetMulticast, Reliable)
 	void OnPossessed(AController* NewController);
+	UFUNCTION(NetMulticast, Reliable)
+	void OnUnPossessed();
 	UFUNCTION()
 	void Move(const struct FInputActionValue& Value);
 	UFUNCTION()
 	void Look(const FInputActionValue& Value);
 
 	UFUNCTION(NetMulticast, Reliable)
+	//For making the character a ragdoll.
 	void MulticastOnDieRPC(AActor* Actor);
-	UFUNCTION(NetMulticast,Reliable)
+	UFUNCTION(NetMulticast, Reliable)
+	//Make the sound to play on both client and host if the owner of this character is the host.
 	void NetMulticastFootStepRPC(FVector2D Input);
+	UFUNCTION(Server, Reliable)
+	//Make the sound to play on the host.
+	void ServerFootStepRPC(FVector2D Input);
 	UFUNCTION()
+	//The callback function bind to health component that called when the player die.
 	void OnDie(AActor* Actor);
 
 	UFUNCTION()
 	void Fire();
 	UFUNCTION(Server, Unreliable)
+	//Called on client to perform the hit calculation on host.
 	void ServerFireRPC();
 	UFUNCTION(Server, Reliable)
+	//Called on client to reload on host.
 	void ServerReloadRPC();
+	UFUNCTION(NetMulticast, Reliable)
+	//Make the client disconnect properly.
+	void MulticastDisconnectRPC();
 };

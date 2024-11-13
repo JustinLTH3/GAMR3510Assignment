@@ -53,6 +53,22 @@ void AGameMode_1v1::PlayerBleeding()
 	}
 }
 
+AActor* AGameMode_1v1::ChoosePlayerStart_Implementation(AController* Player)
+{
+	if (!PlayerStart)
+	{
+		PlayerStart = Super::ChoosePlayerStart_Implementation(Player);
+		return PlayerStart;
+	}
+	AActor* AnotherPlayerStart = Super::ChoosePlayerStart_Implementation(Player);
+	while (AnotherPlayerStart == PlayerStart)
+	{
+		AnotherPlayerStart = Super::ChoosePlayerStart_Implementation(Player);
+	}
+	PlayerStart = nullptr;
+	return AnotherPlayerStart;
+}
+
 void AGameMode_1v1::RestartPlayer(AController* NewPlayer)
 {
 	Super::RestartPlayer(NewPlayer);
@@ -69,8 +85,10 @@ void AGameMode_1v1::StartMatch()
 void AGameMode_1v1::EndMatch()
 {
 	Super::EndMatch();
-	auto GameInstance = GetGameInstance();
-	if (GameInstance) GameInstance->GetSubsystem<UMultiplayerSessionsSubsystem>()->DestroySession();
+	for (auto X = GetWorld()->GetPlayerControllerIterator(); X; ++X)
+	{
+		Cast<AMyCharacter>(X->Get()->GetCharacter())->MulticastDisconnectRPC();
+	}
 	ReturnToMainMenuHost();
 }
 
