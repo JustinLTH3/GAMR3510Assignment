@@ -15,6 +15,7 @@ class GAMR3510ASSIGNMENT_API USettingsMenu : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	//biding functions and variables to settings menu widget
 	virtual void NativeConstruct() override;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
@@ -23,12 +24,15 @@ public:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UButton* MainMenuButton;
 
+	//Function that makes selected menu invisible
 	UFUNCTION(BlueprintCallable)
 	void HideMenu();
 
+	//Function that makes selected menu visible
 	UFUNCTION()
 	void ShowMenu();
 
+	//Function that Returns to main menu
 	UFUNCTION()
 	void returnToMainMenu();
 };

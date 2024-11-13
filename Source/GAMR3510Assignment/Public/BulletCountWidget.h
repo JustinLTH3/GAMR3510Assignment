@@ -15,12 +15,19 @@ class GAMR3510ASSIGNMENT_API UBulletCountWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	//CurrentBulletCount is binded to the umg text for bullets
 	UPROPERTY(EditDefaultsOnly, meta=(BindWidget))
-	class UTextBlock* CurrentBulletCount;
+	class UTextBlock* CurrentBulletCount; 
+
+	//MaxBulletCount is binden to the umg text to show the max bullets of the weapon
 	UPROPERTY(EditDefaultsOnly, meta=(BindWidget))
-	UTextBlock* MaxBulletCount;
+	UTextBlock* MaxBulletCount; 
 	UFUNCTION()
+
+	//updating bullet count when player fires/reloads
 	void Update(int NewCurrentBulletCount) const;
 	UFUNCTION()
-	void SetMaxBulletCount(int NewMaxBulletCount) const;
+
+	//setting max bullet count for the weapon
+	void SetMaxBulletCount(int NewMaxBulletCount) const; 
 };

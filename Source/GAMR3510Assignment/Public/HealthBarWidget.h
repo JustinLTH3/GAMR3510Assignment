@@ -16,12 +16,13 @@ class GAMR3510ASSIGNMENT_API UHealthBarWidget : public UUserWidget
 	
 public:
     // The progress bar that shows the health
-    UPROPERTY(BlueprintReadWrite, meta = (BindWidget)) // Binding this with the widget that has the same name
-        class UProgressBar* HealthBar;  // Progress bar
+    // Binding this with the widget that has the same name
+    UPROPERTY(BlueprintReadWrite, meta = (BindWidget)) 
+        class UProgressBar* HealthBar; 
 
-    // The text block that shows the percentage
+    // The text block that shows the percentage health
     UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-        class UTextBlock* HealthText;  // Text that shows health
+        class UTextBlock* HealthText;
 
     // Function to update both the progress bar and text
     void UpdateHealth(float CurrentHealth, float MaxHealth);

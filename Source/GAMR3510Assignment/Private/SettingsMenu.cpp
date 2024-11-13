@@ -9,25 +9,24 @@
 
 void USettingsMenu::NativeConstruct()
 {
-	//HideMenu(); //menu is hidden immedietly
+	//adding "HideMenu" function to Back Button when it is clicked
 	BackButton->OnClicked.AddDynamic(this, &USettingsMenu::HideMenu);
-	//BackButton->OnClicked.AddDynamic(this, RemoveFromParent);
-
 }
 
 void USettingsMenu::HideMenu()
 {
+	//hiding menu
 	this->SetVisibility(ESlateVisibility::Collapsed);
-	
 }
 
 void USettingsMenu::ShowMenu()
 {
+	//showing menu
 	this->SetVisibility(ESlateVisibility::Visible);
 
 }
 
 void USettingsMenu::returnToMainMenu()
 {
-
+	//currently not used/ no functionality
 }
