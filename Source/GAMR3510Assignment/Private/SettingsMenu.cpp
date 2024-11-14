@@ -25,8 +25,3 @@ void USettingsMenu::ShowMenu()
 	this->SetVisibility(ESlateVisibility::Visible);
 
 }
-
-void USettingsMenu::returnToMainMenu()
-{
-	//currently not used/ no functionality
-}

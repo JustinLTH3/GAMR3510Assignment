@@ -21,9 +21,6 @@ public:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UButton* BackButton;
 
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	class UButton* MainMenuButton;
-
 	//Function that makes selected menu invisible
 	UFUNCTION(BlueprintCallable)
 	void HideMenu();
@@ -32,7 +29,4 @@ public:
 	UFUNCTION()
 	void ShowMenu();
 
-	//Function that Returns to main menu
-	UFUNCTION()
-	void returnToMainMenu();
 };
