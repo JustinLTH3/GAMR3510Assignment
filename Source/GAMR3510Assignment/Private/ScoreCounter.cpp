@@ -13,11 +13,9 @@ void UScoreCounter::UpdateScore(int p1Points, int p2Points)
 
 void UScoreCounter::DisplayPlayerNames(FString name1, FString name2)
 {
-	//setting text accordingly to the vurrent player names
+	//setting text accordingly to the current player names
 	p1Name->SetText(FText::FromString(name1));
 	p2Name->SetText(FText::FromString(name2));
-
-
 }
 
 
