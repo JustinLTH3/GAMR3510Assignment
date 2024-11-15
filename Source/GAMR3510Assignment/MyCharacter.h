@@ -52,10 +52,10 @@ protected:
 	UWeaponComponent* WeaponComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Component")
-	class USoundBase* WalkSound;
+	USoundBase* WalkSound;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
-	class UAudioComponent* AudioSound;
+	UAudioComponent* AudioSound;
 
 public:
 	// Called every frame
@@ -75,7 +75,7 @@ public:
 	void Look(const FInputActionValue& Value);
 
 	UFUNCTION(NetMulticast, Reliable)
-	//For making the character a ragdoll.
+	//For making the character a ragdoll and stop footstep audio.
 	void MulticastOnDieRPC(AActor* Actor);
 	UFUNCTION(NetMulticast, Reliable)
 	//Make the sound to play on both client and host if the owner of this character is the host.
@@ -96,6 +96,6 @@ public:
 	//Called on client to reload on host.
 	void ServerReloadRPC();
 	UFUNCTION(NetMulticast, Reliable)
-	//Make the client disconnect properly.
+	//Disconnect the client properly.
 	void MulticastDisconnectRPC();
 };

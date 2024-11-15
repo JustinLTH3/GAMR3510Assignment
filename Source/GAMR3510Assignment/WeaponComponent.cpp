@@ -37,35 +37,34 @@ void UWeaponComponent::Shoot()
 	OnRep_BulletCount();
 	GetWorld()->GetTimerManager().SetTimer(FireRateTimerHandle, [this]() { bCanFire = true; }, FireRate, false);
 	UE_LOG(LogTemp, Warning, TEXT("%s Shoot"), *GetOwner()->GetName())
+
 	FHitResult HitFromCam;
 	UCameraComponent* Cam = Cast<AMyCharacter>(GetOwner())->GetCameraComponent();
 	FCollisionQueryParams params;
 	params.AddIgnoredActor(GetOwner());
 	GetWorld()->LineTraceSingleByChannel(HitFromCam, Cam->GetComponentLocation(), Cam->GetForwardVector() * 10000 + Cam->GetComponentLocation(), ECC_Visibility, params);
-	if (HitFromCam.GetActor())
-	{
-		NetMulticastFire(GetSocketLocation(FName("Muzzle")), HitFromCam.Location - GetSocketLocation(FName("Muzzle")));
-	}
-	else
+	if (!HitFromCam.GetActor())
 	{
 		NetMulticastFire(GetSocketLocation(FName("Muzzle")), Cam->GetForwardVector() * 10000);
+		return;
 	}
-	if (!HitFromCam.GetActor()) return;
 	FHitResult HitFromWeapon;
 	GetWorld()->LineTraceSingleByChannel(HitFromWeapon, GetSocketLocation(FName("Muzzle")), HitFromCam.Location, ECC_Visibility, params);
 	AActor* HitActor;
-	if (HitFromWeapon.GetActor()) HitActor = HitFromWeapon.GetActor();
-	else HitActor = HitFromCam.GetActor();
-	const auto HealthComp = HitActor->GetComponentByClass<UHealthComponent>();
-	UE_LOG(LogTemp, Display, TEXT("Hit Actor: %s"), *HitActor->GetName());
-	if (!HealthComp) return;
+	if (HitFromWeapon.GetActor())
+	{
+		HitActor = HitFromWeapon.GetActor();
+		NetMulticastFire(GetSocketLocation(FName("Muzzle")), HitFromWeapon.Location - GetSocketLocation(FName("Muzzle")));
+	}
+	else
+	{
+		HitActor = HitFromCam.GetActor();
+		NetMulticastFire(GetSocketLocation(FName("Muzzle")), HitFromCam.Location - GetSocketLocation(FName("Muzzle")));
+	}
+	//If headshot, then double the damage.
 	if (HitFromCam.BoneName == FName("Head")) UGameplayStatics::ApplyDamage(HitActor, Damage * 2, Cast<ACharacter>(GetOwner())->GetController(), GetOwner(), UDamageType::StaticClass());
 	else UGameplayStatics::ApplyDamage(HitActor, Damage, Cast<ACharacter>(GetOwner())->GetController(), GetOwner(), UDamageType::StaticClass());
-
-	
 }
-
-
 
 void UWeaponComponent::NetMulticastFire_Implementation(const FVector& Start, const FVector& End)
 {
@@ -73,15 +72,10 @@ void UWeaponComponent::NetMulticastFire_Implementation(const FVector& Start, con
 	NiagaraComp->SetVariableVec3(FName("Beam End"), End);
 	NiagaraComp->Activate();
 
-	{
-		
-		GunAudio = UGameplayStatics::SpawnSoundAttached(GunSound, GetOwner()->GetRootComponent());
-		GunAudio->bAutoDestroy = true;
-		//AudioSound->SetSound(WalkSound);
-		//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Walk Sound Works")));
-	}
-
-
+	GunAudio = UGameplayStatics::SpawnSoundAttached(GunSound, GetOwner()->GetRootComponent());
+	GunAudio->bAutoDestroy = true;
+	//AudioSound->SetSound(WalkSound);
+	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Walk Sound Works")));
 }
 
 bool UWeaponComponent::GetCanFire()
@@ -107,6 +101,7 @@ void UWeaponComponent::OnRep_BulletCount()
 	if (!Controller->GetHUD()) return;
 	const auto HUD = Cast<AGameHUD>(Controller->GetHUD());
 	if (!HUD->BulletCountWidget) return;
+	//Update bullet display.
 	HUD->BulletCountWidget->Update(BulletCount);
 	HUD->BulletCountWidget->SetMaxBulletCount(MagSize);
 }

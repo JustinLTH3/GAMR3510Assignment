@@ -47,10 +47,10 @@ protected:
 	class UNiagaraSystem* FireEffectMuzzle;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Component")
-	class USoundBase* GunSound;
+	USoundBase* GunSound;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
-	class UAudioComponent* GunAudio;
+	UAudioComponent* GunAudio;
 
 public:
 	UFUNCTION()

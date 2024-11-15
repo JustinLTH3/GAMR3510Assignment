@@ -42,13 +42,3 @@ void AGameState1v1::OnRep_Winner()
 	}
 	//Display Winner.
 }
-
-void AGameState1v1::OnRep_MatchState()
-{
-	Super::OnRep_MatchState();
-	if (MatchState == MatchState::LeavingMap)
-	{
-		auto GameInstance = GetGameInstance();
-		if (GameInstance) GameInstance->GetSubsystem<UMultiplayerSessionsSubsystem>()->DestroySession();
-	}
-}

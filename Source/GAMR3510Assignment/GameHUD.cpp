@@ -29,12 +29,13 @@ void AGameHUD::BeginPlay()
 void AGameHUD::Init(const float Health, const float MaxHealth, const int BulletCount) const
 {
 	UE_LOG(LogTemp, Warning, TEXT("AGameHUD::Init"));
-	FTimerHandle TimerHandle;
 	if (GetWorld()->GetGameState()->PlayerArray.Num() < 2)
 	{
 		GetWorldTimerManager().SetTimerForNextTick([this,Health,MaxHealth,BulletCount]() { Init(Health, MaxHealth, BulletCount); });
 		return;
 	}
+
+	//Initialize the value of the HUD.
 	HealthBar->UpdateHealth(Health, MaxHealth);
 	BulletCountWidget->SetMaxBulletCount(BulletCount);
 	BulletCountWidget->Update(BulletCount);

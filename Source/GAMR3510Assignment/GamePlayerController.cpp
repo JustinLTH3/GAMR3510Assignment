@@ -3,9 +3,19 @@
 #include "GamePlayerController.h"
 
 #include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
 #include "Blueprint/UserWidget.h"
 #include "SettingsMenu.h"
 #include "Components/Button.h"
+
+void AGamePlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{
+		Subsystem->AddMappingContext(MappingContext, 0);
+	}
+}
 
 void AGamePlayerController::SetupInputComponent()
 {

@@ -21,16 +21,15 @@ AGameMode_1v1::AGameMode_1v1()
 bool AGameMode_1v1::ReadyToStartMatch_Implementation()
 {
 	if (NumPlayers == 2)
-		if (GetWorld()->GetNumPlayerControllers() == 2)
+	{
+		for (auto X = GetWorld()->GetPlayerControllerIterator(); X; ++X)
 		{
-			for (auto X = GetWorld()->GetPlayerControllerIterator(); X; ++X)
-			{
-				//Check each client has loaded the world before the match is start.
-				if (!X->Get()->HasClientLoadedCurrentWorld()) return false;
-			}
-			UE_LOG(LogTemp, Warning, TEXT("Match ready!!"));
-			return true;
+			//Check each client has loaded the world before the match is start.
+			if (!X->Get()->HasClientLoadedCurrentWorld()) return false;
 		}
+		UE_LOG(LogTemp, Warning, TEXT("Match ready!!"));
+		return true;
+	}
 	return false;
 }
 
@@ -150,16 +149,17 @@ void AGameMode_1v1::OnPlayerDie(AActor* Actor)
 			}
 		}
 		UE_LOG(LogTemp, Warning, TEXT("OnPlayerDie Reset"))
+		//the function to call after some time so that the round doesn't restart as soon as one player dies.
 		auto func = &AGameMode_1v1::ResetLevel;
 		float timer = 4;
+		//if any player has reached the target score, call decide winner instead of resetting level.
 		if (PlayerDeathCount[x->GetController()] == 5)
 		{
 			func = &AGameMode_1v1::DecideWinner;
+			//wait for a second to prevent decide winner before all players is dead properly within the same frame.
 			timer = 1;
 		}
 		if (GetWorldTimerManager().TimerExists(RoundTimerHandle)) GetWorldTimerManager().ClearTimer(RoundTimerHandle);
 		if (!GetWorldTimerManager().TimerExists(RoundTimeEndHandle)) GetWorldTimerManager().SetTimer(RoundTimeEndHandle, this, func, timer);
 	}
 }
-
-//////countdown give both a point when draw

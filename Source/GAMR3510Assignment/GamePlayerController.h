@@ -15,9 +15,12 @@ class GAMR3510ASSIGNMENT_API AGamePlayerController : public APlayerController
 	GENERATED_BODY()
 
 public:
+	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
 	UPROPERTY(EditAnywhere)
 	class UInputAction* Ia_Pause;
+	UPROPERTY(EditAnywhere)
+	class UInputMappingContext* MappingContext;
 	UFUNCTION()
 	void OnInputPause();
 	UPROPERTY()

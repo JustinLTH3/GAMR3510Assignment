@@ -33,5 +33,4 @@ public:
 	bool bIsDraw = false;
 	UFUNCTION()
 	void OnRep_Winner();
-	virtual void OnRep_MatchState() override;
 };

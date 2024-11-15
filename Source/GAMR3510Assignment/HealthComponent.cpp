@@ -41,7 +41,6 @@ void UHealthComponent::OnRep_Health()
 	UE_LOG(LogTemp, Display, TEXT("Health Component On Replication"));
 	if (ACharacter* Character = Cast<ACharacter>(GetOwner()))
 	{
-		if (!Character->GetController()) return;
 		const auto Controller = Cast<APlayerController>(Character->GetController());
 		if (!Controller) return;
 		if (!Controller->GetHUD()) return;

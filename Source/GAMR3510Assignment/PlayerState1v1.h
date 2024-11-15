@@ -14,5 +14,4 @@ class GAMR3510ASSIGNMENT_API APlayerState1v1 : public APlayerState
 {
 	GENERATED_BODY()
 	virtual void OnRep_Score() override;
-	virtual void Reset() override;
 };
