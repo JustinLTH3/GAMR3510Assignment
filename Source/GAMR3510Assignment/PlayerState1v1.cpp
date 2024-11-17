@@ -16,3 +16,7 @@ void APlayerState1v1::OnRep_Score()
 		GameHUD->ScoreCounter->UpdateScore(GetWorld()->GetGameState()->PlayerArray[0].Get()->GetScore(), GetWorld()->GetGameState()->PlayerArray[1].Get()->GetScore());
 	}
 }
+
+void APlayerState1v1::Reset()
+{
+}

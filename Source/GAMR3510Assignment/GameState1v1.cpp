@@ -29,16 +29,18 @@ void AGameState1v1::OnRep_Winner()
 	if (!HUD) return;
 	auto GHud = Cast<AGameHUD>(HUD);
 	if (!GHud) return;
+
 	if (bIsDraw)
 	{
+		//Display only "Draw" if is draw.
 		GHud->ScoreCounter->WinnerText->SetText(FText::FromString("Draw"));
 		GHud->ScoreCounter->WinnerText->SetVisibility(ESlateVisibility::Visible);
 	}
 	else
 	{
+		//Display Winner.
 		GHud->ScoreCounter->WinnerText->SetText(FText::FromString(Winner->GetPlayerName()));
 		GHud->ScoreCounter->WinnerText->SetVisibility(ESlateVisibility::Visible);
 		GHud->ScoreCounter->WinText->SetVisibility(ESlateVisibility::Visible);
 	}
-	//Display Winner.
 }

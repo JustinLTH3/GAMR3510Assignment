@@ -100,6 +100,7 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 void AMyCharacter::OnUnPossessed_Implementation()
 {
+	//Prevent audio keep player when the round is reset.
 	if (AudioSound)
 	{
 		AudioSound->Stop();

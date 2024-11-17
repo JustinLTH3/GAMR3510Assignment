@@ -29,6 +29,7 @@ void AGamePlayerController::SetupInputComponent()
 void AGamePlayerController::OnInputPause()
 {
 	UE_LOG(LogTemp, Warning, TEXT("InputPause"));
+	//If settings menu is created and is displaying, hide that.
 	if (SettingsMenu && SettingsMenu->IsVisible())
 	{
 		SettingsMenu->HideMenu();
@@ -36,12 +37,14 @@ void AGamePlayerController::OnInputPause()
 		SetShowMouseCursor(false);
 		return;
 	}
+	//set up the settings menu if it is not created.
 	if (!SettingsMenu)
 	{
 		SettingsMenu = CreateWidget<USettingsMenu>(this, SettingsMenuClass);
 		SettingsMenu->BackButton->OnClicked.AddUniqueDynamic(this, &AGamePlayerController::OnInputPause);
 		SettingsMenu->AddToViewport();
 	}
+	//Show Menu.
 	SetInputMode(FInputModeGameAndUI());
 	SettingsMenu->ShowMenu();
 	SetShowMouseCursor(true);

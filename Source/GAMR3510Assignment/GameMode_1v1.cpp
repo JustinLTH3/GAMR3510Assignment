@@ -46,6 +46,7 @@ void AGameMode_1v1::RoundTimeUpdate()
 
 void AGameMode_1v1::PlayerBleeding()
 {
+	//Apply damage to both player.
 	for (auto X = GetWorld()->GetPlayerControllerIterator(); X; ++X)
 	{
 		UGameplayStatics::ApplyDamage(X->Get()->GetCharacter(), 5, nullptr, nullptr, UDamageType::StaticClass());
@@ -60,6 +61,7 @@ AActor* AGameMode_1v1::ChoosePlayerStart_Implementation(AController* Player)
 		return PlayerStart;
 	}
 	AActor* AnotherPlayerStart = Super::ChoosePlayerStart_Implementation(Player);
+	//prevent both players start from the same player start.
 	while (AnotherPlayerStart == PlayerStart)
 	{
 		AnotherPlayerStart = Super::ChoosePlayerStart_Implementation(Player);
@@ -98,6 +100,7 @@ void AGameMode_1v1::DecideWinner()
 	{
 		if (GameState->PlayerArray[i]->GetScore() == 5) Winners.AddUnique(GameState->PlayerArray[i]);
 	}
+	//if both player get 5 points, it is a draw.
 	if (Winners.Num() == 2)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Draw"))
@@ -107,6 +110,7 @@ void AGameMode_1v1::DecideWinner()
 	}
 	else
 	{
+		//Only 1 player get 5 points, since the function is only called when one player reach 5 points,  he is the winner.
 		UE_LOG(LogTemp, Warning, TEXT("Winner Is %s"), *Winners.Last()->GetPlayerName());
 		AGameState1v1* GameState1V1 = GetGameState<AGameState1v1>();
 		GameState1V1->Winner = Winners.Last();
@@ -119,10 +123,12 @@ void AGameMode_1v1::ResetLevel()
 {
 	UE_LOG(LogTemp, Warning, TEXT("ResetLevel"));
 	Super::ResetLevel();
+	//Spawn players after resetting the level.
 	for (auto X = GetWorld()->GetPlayerControllerIterator(); X; ++X)
 	{
 		RestartPlayer(X->Get());
 	}
+	//Reset the round timer.
 	GetWorld()->GetTimerManager().SetTimer(RoundTimerHandle, this, &AGameMode_1v1::RoundTimeRunOut, 60);
 	GetWorld()->GetTimerManager().SetTimer(RoundTimeUpdateHandle, this, &AGameMode_1v1::RoundTimeUpdate, .5f, true);
 }

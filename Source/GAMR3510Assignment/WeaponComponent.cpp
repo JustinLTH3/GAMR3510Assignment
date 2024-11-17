@@ -42,13 +42,16 @@ void UWeaponComponent::Shoot()
 	UCameraComponent* Cam = Cast<AMyCharacter>(GetOwner())->GetCameraComponent();
 	FCollisionQueryParams params;
 	params.AddIgnoredActor(GetOwner());
+	//Trace if the crosshair of the player hit something.
 	GetWorld()->LineTraceSingleByChannel(HitFromCam, Cam->GetComponentLocation(), Cam->GetForwardVector() * 10000 + Cam->GetComponentLocation(), ECC_Visibility, params);
 	if (!HitFromCam.GetActor())
 	{
+		//return early if the player is not aiming at anything.
 		NetMulticastFire(GetSocketLocation(FName("Muzzle")), Cam->GetForwardVector() * 10000);
 		return;
 	}
 	FHitResult HitFromWeapon;
+	//if the player is aiming at something, trace to see if the gun is blocked by anything.
 	GetWorld()->LineTraceSingleByChannel(HitFromWeapon, GetSocketLocation(FName("Muzzle")), HitFromCam.Location, ECC_Visibility, params);
 	AActor* HitActor;
 	if (HitFromWeapon.GetActor())
@@ -68,10 +71,12 @@ void UWeaponComponent::Shoot()
 
 void UWeaponComponent::NetMulticastFire_Implementation(const FVector& Start, const FVector& End)
 {
+	//Show vfx.
 	UNiagaraComponent* NiagaraComp = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), FireEffectMuzzle, Start, FRotator(0), FVector(1), true, false);
 	NiagaraComp->SetVariableVec3(FName("Beam End"), End);
 	NiagaraComp->Activate();
 
+	//Play audio.
 	GunAudio = UGameplayStatics::SpawnSoundAttached(GunSound, GetOwner()->GetRootComponent());
 	GunAudio->bAutoDestroy = true;
 	//AudioSound->SetSound(WalkSound);
@@ -92,15 +97,16 @@ void UWeaponComponent::BeginPlay()
 
 void UWeaponComponent::OnRep_BulletCount()
 {
+	//prevent accessing nullptr and Get hud.
 	const ACharacter* Character = Cast<ACharacter>(GetOwner());
 	if (!Character) return;
-
 	if (!Character->GetController()) return;
 	const auto Controller = Cast<APlayerController>(Character->GetController());
 	if (!Controller) return;
 	if (!Controller->GetHUD()) return;
 	const auto HUD = Cast<AGameHUD>(Controller->GetHUD());
 	if (!HUD->BulletCountWidget) return;
+	
 	//Update bullet display.
 	HUD->BulletCountWidget->Update(BulletCount);
 	HUD->BulletCountWidget->SetMaxBulletCount(MagSize);
